@@ -65,7 +65,7 @@ traverseDimsList<-function(lst0,name,level=0,debug=FALSE){
     if (inherits(lst0,"list")) {
         dfr = NULL;
         for (name0 in names(lst0)){
-            res   = traverseList(lst0[[name0]],name0,level=level+1);
+            res   = traverseDimsList(lst0[[name0]],name0,level=level+1);
             level = res$level;#--reset level
             dfr1  = res$dfr;
             dfr1[[col]] = name;
@@ -126,7 +126,7 @@ createSparseDimsMap<-function(...){
     dfr = NULL;
     dots = rlang::list2(...);
     for (nm in names(dots)){
-        dfrp = traverseList(dots[[nm]],nm);
+        dfrp = traverseDimsList(dots[[nm]],nm);
         if (is.null(dfr)) {
             dfr = dfrp;
         } else {
@@ -209,7 +209,7 @@ createFullDimsMap<-function(map){
     dfr = NULL;
     for (nm in names(dmlvs)) {
         #--nm = names(lst)[3];
-        dfrp = traverseList(dmlvs[[nm]],nm);
+        dfrp = traverseDimsList(dmlvs[[nm]],nm);
         if (is.null(dfr)){
             dfr = dfrp;
         } else {
@@ -254,10 +254,12 @@ createDimsMaps<-function(...){
     dmnms   = attr(dfrSprs,"dmnms");
     dfrS2F  = dfrSprs |> dplyr::inner_join(dfrFull,by=dmnms) |>
                 dplyr::select(-1) |>
-                dplyr::rename(idx=j);
+                dplyr::rename(idx=j) |>
+                createDimFactors();
     dfrF2S  = dfrFull |> dplyr::full_join(dfrSprs,by=dmnms) |>
                 dplyr::mutate(i=ifelse(is.na(i),-1,i)) |>
                 dplyr::select(-1) |>
-                dplyr::rename(idx=i);
+                dplyr::rename(idx=i) |>
+                createDimFactors();
     return(list(dfrS2F=dfrS2F,dfrF2S=dfrF2S));
 }

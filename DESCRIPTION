@@ -15,3 +15,5 @@ Imports:
 LinkingTo: 
     TMB
 RoxygenNote: 7.2.3
+URL: https://github.com/wStockhausen/tmbGMACS
+BugReports: https://github.com/wStockhausen/tmbGMACS/issues

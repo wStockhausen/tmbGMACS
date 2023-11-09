@@ -30,7 +30,7 @@ vZs = list( MALE=  list(IMMATURE=list(`NEW SHELL`=list(`NO AGEs`=seq(40,60,5))),
 attr(vZs,"dmnms")<-c("x","m","s","a","z");
 
 #--create dataframe with index ("i") mapping to realized dimension level combinations
-dfrSparse = createSparseDimsMaps(y=vYs,c=vCs,r=vRs,x=vXs,m=vMs,s=vSs,a=vAs,z=vZs);
+dfrSparse = createSparseDimsMap(y=vYs,c=vCs,r=vRs,x=vXs,m=vMs,s=vSs,a=vAs,z=vZs);
 #--create dataframe with index ("j") mapping realized dimension levels to all combinations
 dfrFull   = createFullDimsMap(dfrSparse); #--all possible combinations
 

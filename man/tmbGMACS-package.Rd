@@ -8,4 +8,12 @@
 \description{
 TMB implementation of the GMACS stock assessment model. This package provides a modeling framework in R using TMB based on the GMACS stock assessment framework developed in ADMB.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/wStockhausen/tmbGMACS}
+  \item Report bugs at \url{https://github.com/wStockhausen/tmbGMACS/issues}
+}
+
+}
 \keyword{internal}

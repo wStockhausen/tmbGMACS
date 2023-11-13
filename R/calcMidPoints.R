@@ -8,6 +8,6 @@
 #'
 calcMidPoints<-function(v){
   n = length(v);
-  m = 0.5*(v[2:n]-v[1:(n-1)]);
+  m = 0.5*(v[2:n]+v[1:(n-1)]);
   return(m);
 }

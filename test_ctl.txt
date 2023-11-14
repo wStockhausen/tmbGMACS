@@ -171,8 +171,8 @@ RECRUITMENT--################################################################
 ##--size function parameter dev covariates
 ## ———————————————————————————————————————————————————————————————————————————————————— ##
 #  id	devs_id time_block  param  scale	units	phz  RE ival	type	p1	p2  env_covars label
-#  1      1   2001:2005  cov_alpha  ar    none  5    no  0.0  normal  0   1     0      cov_alpha
-#  2      2   2001:2005  cov_beta   ar    none  5    no  0.0  normal  0   1     0      cov_beta
+#  1      1   2001:2005  cov_alpha  ar    none  5    no  0.0  normal  0   1     0    cov_alpha
+#  2      2   2001:2005  cov_beta   ar    none  5    no  0.0  normal  0   1     0    cov_beta
 #  END TABLE
 ## ———————————————————————————————————————————————————————————————————————————————————— ##
 
@@ -195,12 +195,36 @@ RECRUITMENT--################################################################
 ##--no covariates (TODO?)
 END RECRUITMENT SECTION
 
+################################################################################
+NATURAL MORTALITY--################################################################
+##--lnM = ln(M_ref) + ln(f(z))
+##--reference (M_ref) types
+###--1. constant (i.e., time-invariant)
+###--2. t-v: time-varying
+###--3. t-v-c: time-varying with covariates
+##--size function (f(z)) types
+###--1. constant (1)
+###--2. Lorenzen (1/z)
+##------------------------------------------------------------------------------
+  id  y          c     x       m       s  ref_fcn  size_fcn label
+  1   2001:2005  all  all   immature all  constant constant Mi
+  2   2001:2005  all  all    mature  all  constant constant Mm 
+  END TABLE
+##------------------------------------------------------------------------------
+
+##--natural mortality parameters
+## ———————————————————————————————————————————————————————————————————————————————————— ##
+  id  fcn_id scale  units      phz  ival    lb   ub    type     p1    p2  param
+  1      1   arith per-year     1   0.23   0.01 3.00 lognormal  0.23   1  imm_lnR_ref
+  2      2   arith per-year     1   0.30   0.01 3.00 lognormal  0.30   1  mat_lnR_ref
+  END TABLE
+## ———————————————————————————————————————————————————————————————————————————————————— ##
+END NATURAL MORTALITY SECTION
+
 GROWTH--#####################################################################
 END GROWTH SECTION
 MATURITY--################################################################
 END MATURITY SECTION
-NATURAL MORTALITY--################################################################
-END NATURAL MORTALITY SECTION
 SELECTIVITY/RETENTION--################################################################
 END SELECTIVITY/RETENTION SECTION
 FISHING MORTALITY--################################################################

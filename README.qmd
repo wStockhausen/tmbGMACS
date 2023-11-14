@@ -1,17 +1,26 @@
 ---
-output: github_document
-always_allow_html: true
+title: "README"
+crossref: 
+  fig-title: Figuure
+  tbl-title: Table
+format: 
+  gfm: 
+    html-math-method: mathjax
+    comment: "#>"
+    collapse: true
+    toc: true
+tbl-cap-location: top
+fig-cap-location: bottom
+prefer-html: true
+keep-yaml: true
 ---
 
-<!-- use `devtools::build_readme()` to build README.md prior to committing keep README.md up-to-date-->
+<!-- README.md is generated from README.qmd. Please edit README.qmd, then render README.md using `quarto render README.qmd`. -->
+<!-- use `quarto render README.qmd` to build README.md prior to committing to keep README.md up-to-date-->
 <!-- don't forget to commit and push the resulting figure files, so they display on GitHub and CRAN.-->
-
-<!-- README.md is generated from README.Rmd. Please edit this file, then generate that file. -->
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
   fig.path = "man/figures/README-",
   out.width = "100%"
 )
@@ -77,39 +86,39 @@ so $\mathbf{n_t}$ is a vector representing the abundance in each category at tim
 $\mathbf{n_t}_c$):
 
 
-$$\frac{d\mathbf{n_t}}{dt} = \left[ \mathbf{T_t}-(\mathbf{M_t}+\mathbf{F_t}) \right]*\mathbf{n_t}$$
+$$\frac{d\mathbf{n_t}}{dt} = \left[ \mathbf{T_t}-(\mathbf{M_t}+\mathbf{F_t}) \right]*\mathbf{n_t}$$ {#eq-1}
 
 
 where $\mathbf{T_t}$ is a $c$ x $c$ matrix representing transition rates between population categories (e.g., growth or movement) at time $t$, $\mathbf{M_t}$ is a similarly-sized diagonal matrix representing natural mortality at time t, and $\mathbf{M_t}$ is a similarly-sized diagonal matrix representing fishing mortality at time $t$. For gmacs, rates within a (seasonal) timestep are assumed to be constant. Thus, @eqn-1 could be integrated to obtain
 
-$$\mathbf{n_{t+1}} = e^{\mathbf{A_t} \delta t}*\mathbf{n_t}$$
+$$\mathbf{n_{t+1}} = e^{\mathbf{A_t} \delta t}*\mathbf{n_t}$$ {#eq-2}
  
 where $\delta t$ is the time step from $t$ to $t+1$, and $\mathbf{A_t}=\left[ \mathbf{T_t}-(\mathbf{M_t}+\mathbf{F_t}) \right]$. In practice, when $\mathbf{T_t}$ represents growth processes, these are regarded as discrete-time processes with a season length of 0, so that 
 
-$$ \mathbf{n_{t+1}} = \mathbf{T_t}*\mathbf{n_t} $$
+$$ \mathbf{n_{t+1}} = \mathbf{T_t}*\mathbf{n_t} $$ {#eq-3}
  
 for seasons in which growth occurs and 
 
-
-$$ \mathbf{n_{t+1}} = e^{-\left[ \mathbf{M_t}+\mathbf{F_t} \right]*\delta t}*\mathbf{n_t}$$
+$$ \mathbf{n_{t+1}} = e^{-\left[ \mathbf{M_t}+\mathbf{F_t} \right]*\delta t}*\mathbf{n_t}$$ {#eq-4}
 
 for seasons with non-0 lengths in which mortality occurred.
 
 Recruitment, the addition of new individuals to the model population categories, is also considered a discrete-time process associated with a season length of 0, so 
 
-$$ \mathbf{n_{t+1}} = \mathbf{R_t}+\mathbf{n_t}$$
+$$ \mathbf{n_{t+1}} = \mathbf{R_t}+\mathbf{n_t}$$ {#eq-5}
+
 when recruitment occurs, where $\mathbf{R_t}$ is a vector of length $c$.
 
 Let $<\mathbf{R_s}>$ represent the equilibrium (i.e., longterm mean) recruitment in (within-year) season $s$, and similarly for $<\mathbf{T_s}>$ and $\mathbf{Z_s}=\mathbf{M_s}+\mathbf{F_s}$. The equilibrium population size $<\mathbf{n_s}>$ in season $s$ is then determined by the solution to 
 
-$$<\mathbf{n_s}> = 
+$$<\mathbf{n_s}> = $$ {#eq-6}
 
 ## Model dimensions 
 
 Model dimensions consist of year (**y**), season (**s**), and a set of categories ({**c**}) into which the population is divided (e.g., sex and size). Levels within a given population category can be nested within another category (e.g., different size classes might be defined for males and females if they exhibited substantially different growth patterns). For a given year, population 
 abundance is integrated across seasons within the year and different processes can occur in different seasons. 
 
-Dimensions are defined using the function \code{[createSparseDimsMap]("man/createSparseDimsMap.Rd")}. As an example, the following creates a set of dimensions encompassing year (**y**), season(**s**), sex (**x**), and size (**z**), with different size classes for males and females. Note that the "dimension name(s)" are added to the vector or list defining the levels as an attribute "dmnms".
+Dimensions are defined using the function \code{[createSparseDimsMap]("man/createSparseDimsMap.Rd")}. As an example (@tbl-Ex1), the following creates a set of dimensions encompassing year (**y**), season(**s**), sex (**x**), and size (**z**), with different size classes for males and females. Note that the "dimension name(s)" are added to the vector or list defining the levels as an attribute "dmnms".
 
 ```{r ex1}
 library(tmbGMACS);
@@ -128,7 +137,11 @@ vZs = list(  MALE=seq(40,60,5),
 dms = tmbGMACS::createSparseDimsMap(y=vYs,s=vSs,x=vXs,z=vZs);
 ```
 
-```{r tblEx1, eval=require(kableExtra), echo=FALSE}
+```{r}
+#| label: tbl-Ex1
+#| tbl-cap: "Example dimensions map."
+#| eval: !expr '(require(kableExtra))'
+#| echo: false
 dms |> kableExtra::kbl(booktabs=TRUE);
 ```
 
@@ -146,7 +159,7 @@ Most model quantities are represented as vectors, and thus have associated dimen
 
 ## Aggregating over model dimensions
 
-Data fit in gmacs typically represent quantities aggregated over some combination of population categories, so it is necessary to determine the mappping from model indices to data indices. The function [createAggregatorMap](man/createAggregatorMap.Rd) provides the required mapping of 1-d indices from one dimensions map to another, as illustrwated in the following example using the dimensions map \code{dms} from the previous example:
+Data fit in gmacs typically represent quantities aggregated over some combination of population categories, so it is necessary to determine the mappping from model indices to data indices. The function [createAggregatorMap](man/createAggregatorMap.Rd) provides the required mapping of 1-d indices from one dimensions map to another, as illustrated in the following example (@tbl-Ex2) using the dimensions map \code{dms} from the previous example:
 
 ```{r ex2}
 #> Example of how to create an aggregator map using "dms" from above
@@ -158,8 +171,10 @@ Data fit in gmacs typically represent quantities aggregated over some combinatio
 ```
 
 *j* is the vector index for aggDims, *i* is the vector index for dms.
-```{r tblEx2, eval=require(kableExtra), echo=FALSE}
+```{r}
+#| label: tbl-Ex2
+#| tbl-cap: Example aggregator map (from indices i to indices j).
+#| eval: !expr 'require(kableExtra)'
+#| echo: false
 aggMap |> kableExtra::kbl(booktabs=TRUE);
 ```
-
-

@@ -14,10 +14,10 @@ readCTL<-function(fn){
         res = readCTL_Recruitment(con,nl);
         nl = res$nl;
         lst[["rec"]] = res$lst;
-    # } else if (stringr::str_starts(ln,"[:blank:]*NATURAL MORTALITY")){
-    #     res = readCTL_NaturalMortality(con,nl);
-    #     nl = res$nl;
-    #     lst[["nm"]] = res$lst;
+    } else if (stringr::str_starts(ln,"[:blank:]*NATURAL MORTALITY")){
+        res = readCTL_NaturalMortality(con,nl);
+        nl = res$nl;
+        lst[["nm"]] = res$lst;
     # } else if (stringr::str_starts(ln,"[:blank:]*GROWTH")){
     #     res = readCTL_Growth(con,nl);
     #     nl = res$nl;
@@ -92,46 +92,42 @@ readCTL_InitialAbundance<-function(con,nl){
   type = "INITIAL ABUNDANCE";
   cat("reading",type,"section starting on line",nl,"\n");
   lst = list();
+  #--read section
+  res = parseVal(con,nl);#--need to pass ln
+  option = res$val; nl = res$nl;
+  cat("optInitAbund =",option,"\n");
+  lst[["option"]] = option;
+  if (option==2){
+    #--read R0 parameter specification
+    res = readParamsTable(con,nl);
+    nl = res$nl;
+    lst[["R0_tbl"]] = res$tbl;
+    rm(res);
+  } else if (option==3){
+    #--read Rini parameter specification
+    res = readParamsTable(con,nl);
+    nl = res$nl;
+    lst[["Rini_tbl"]] = res$tbl;
+    rm(res);
+  } else if (option==4){
+    #--read reference class specification
+    res = readParamsTable(con,nl);
+    nl = res$nl;
+    lst[["ref_pars_tbl"]] = res$tbl;
+    rm(res);
+    #--read free parameters specification
+    res = parseVal(con,nl);#--don't pass ln, need to start with next line
+    opt4_vals = res$val;  nl = res$nl;
+    cat("opt4_vals =",opt4_vals,"\n");
+    lst[["opt4_vals"]] = opt4_vals;
+    res = readParamsTable(con,nl);
+    nl = res$nl;
+    lst[["off_pars_tbl"]] = res$tbl;
+    rm(res);
+  }
   ln=readLines(con,n=1); nl=nl+1;
   while(isOpen(con)&(!stringr::str_starts(ln,paste0("[:blank:]*END ",type)))){
     cat("\t",nl,":\t",ln,"\n");
-    if (stringr::str_starts(ln,"[[:blank:]*#]")){
-      #--skip line
-    } else {
-      #--read section
-      res = parseVal(con,nl,ln);#--need to pass ln
-      option = res$val; nl = res$nl;
-      cat("optInitAbund =",option,"\n");
-      lst[["option"]] = option;
-      if (option==2){
-        #--read R0 parameter specification
-        res = readParamsTable(con,nl);
-        nl = res$nl;
-        lst[["R0_tbl"]] = res$tbl;
-        rm(res);
-      } else if (option==3){
-        #--read Rini parameter specification
-        res = readParamsTable(con,nl);
-        nl = res$nl;
-        lst[["Rini_tbl"]] = res$tbl;
-        rm(res);
-      } else if (option==4){
-        #--read reference class specification
-        res = readParamsTable(con,nl);
-        nl = res$nl;
-        lst[["ref_pars_tbl"]] = res$tbl;
-        rm(res);
-        #--read free parameters specification
-        res = parseVal(con,nl);#--don't pass ln, need to start with next line
-        opt4_vals = res$val;  nl = res$nl;
-        cat("opt4_vals =",opt4_vals,"\n");
-        lst[["opt4_vals"]] = opt4_vals;
-        res = readParamsTable(con,nl);
-        nl = res$nl;
-        lst[["off_pars_tbl"]] = res$tbl;
-        rm(res);
-      }
-    }
     ln=readLines(con,n=1); nl=nl+1;
   }#--while
   cat(type,"section ended on line",nl,"\n");
@@ -142,46 +138,42 @@ readCTL_Recruitment<-function(con,nl){
   type = "RECRUITMENT";
   cat("reading",type,"section starting on line",nl,"\n");
   lst = list();
+  #--read recruitment function section
+  cat("reading recruitment function section\n")
+  res = readParamsTable(con,nl);
+  nl = res$nl;
+  lst[["rec_fcns"]] = res$tbl;
+  rm(res);
+
+  #--read size function parameters section
+  cat("reading recruitment-at-size parameters section\n")
+  res = readParamsTable(con,nl);
+  nl = res$nl;
+  lst[["rec_z_pars"]] = res$tbl;
+  rm(res);
+  #--read size function parameter devs section
+  #cat("reading size function parameter devs section\n")
+  #--read size function parameter dev covariates section
+  #cat("reading size function parameter dev covariates section\n")
+
+  #--annual rec params
+  cat("reading recruitment parameters section\n")
+  res = readParamsTable(con,nl);
+  nl = res$nl;
+  lst[["rec_pars"]] = res$tbl;
+  rm(res);
+
+  #--annual sex ratio
+  cat("reading annual sex ratio section\n")
+  res = readParamsTable(con,nl);
+  nl = res$nl;
+  lst[["rec_pars"]] = res$tbl;
+  rm(res);
+  #--read size function parameter devs section
+  #--read size function parameter dev covariates section
   ln=readLines(con,n=1); nl=nl+1;
   while(isOpen(con)&(!stringr::str_starts(ln,paste0("[:blank:]*END ",type)))){
     cat("\t",nl,":\t",ln,"\n");
-    # if (stringr::str_starts(ln,"[[:blank:]*#]")){
-    #   #--skip line
-    # } else {
-      #--read recruitment function section
-      cat("reading recruitment function section\n")
-      res = readParamsTable(con,nl);
-      nl = res$nl;
-      lst[["rec_fcns"]] = res$tbl;
-      rm(res);
-
-      #--read size function parameters section
-      cat("reading recruitment-at-size parameters section\n")
-      res = readParamsTable(con,nl);
-      nl = res$nl;
-      lst[["rec_z_pars"]] = res$tbl;
-      rm(res);
-      #--read size function parameter devs section
-      #cat("reading size function parameter devs section\n")
-      #--read size function parameter dev covariates section
-      #cat("reading size function parameter dev covariates section\n")
-
-      #--annual rec params
-      cat("reading recruitment parameters section\n")
-      res = readParamsTable(con,nl);
-      nl = res$nl;
-      lst[["rec_pars"]] = res$tbl;
-      rm(res);
-
-      #--annual sex ratio
-      cat("reading annual sex ratio section\n")
-      res = readParamsTable(con,nl);
-      nl = res$nl;
-      lst[["rec_pars"]] = res$tbl;
-      rm(res);
-      #--read size function parameter devs section
-      #--read size function parameter dev covariates section
-    }
     ln=readLines(con,n=1); nl=nl+1;
     cat(stringr::str_starts(ln,paste0("[:blank:]*END ",type)),"\t","\n")
   }#--while
@@ -194,19 +186,7 @@ readCTL_NaturalMortality<-function(con,nl){
   cat("reading",type,"section starting on line",nl,"\n");
   lst = list();
   ln=readLines(con,n=1); nl=nl+1;
-  while(isOpen(con)&(!stringr::str_starts(ln,paste0("[:blank:]*END ",type)))){
-    cat("\t",nl,":\t",ln,"\n");
-    if (stringr::str_starts(ln,"[[:blank:]*#]")){
-      #--skip line
-    } else {
-      #--read section
-      # option = parseVal(ln);
-      # cat("option =",option,"\n");
-      # lst[["option"]] = option;
-      #--do option!
-    }
-    ln=readLines(con,n=1); nl=nl+1;
-  }#--while
+  #--read section
   cat(type,"section ended on line",nl,"\n");
   return(list(nl=nl,lst=lst));
 }
@@ -216,19 +196,7 @@ readCTL_Growth<-function(con,nl){
   cat("reading",type,"section starting on line",nl,"\n");
   lst = list();
   ln=readLines(con,n=1); nl=nl+1;
-  while(isOpen(con)&(!stringr::str_starts(ln,paste0("[:blank:]*END ",type)))){
-    cat("\t",nl,":\t",ln,"\n");
-    if (stringr::str_starts(ln,"[[:blank:]*#]")){
-      #--skip line
-    } else {
-      #--read section
-      # option = parseVal(ln);
-      # cat("option =",option,"\n");
-      # lst[["option"]] = option;
-      #--do option!
-    }
-    ln=readLines(con,n=1); nl=nl+1;
-  }#--while
+  #--read section
   cat(type,"section ended on line",nl,"\n");
   return(list(nl=nl,lst=lst));
 }
@@ -238,19 +206,7 @@ readCTL_Maturity<-function(con,nl){
   cat("reading",type,"section starting on line",nl,"\n");
   lst = list();
   ln=readLines(con,n=1); nl=nl+1;
-  while(isOpen(con)&(!stringr::str_starts(ln,paste0("[:blank:]*END ",type)))){
-    cat("\t",nl,":\t",ln,"\n");
-    if (stringr::str_starts(ln,"[[:blank:]*#]")){
-      #--skip line
-    } else {
-      #--read section
-      # option = parseVal(ln);
-      # cat("option =",option,"\n");
-      # lst[["option"]] = option;
-      #--do option!
-    }
-    ln=readLines(con,n=1); nl=nl+1;
-  }#--while
+  #--read section
   cat(type,"section ended on line",nl,"\n");
   return(list(nl=nl,lst=lst));
 }
@@ -260,19 +216,7 @@ readCTL_Selectivity<-function(con,nl){
   cat("reading",type,"section starting on line",nl,"\n");
   lst = list();
   ln=readLines(con,n=1); nl=nl+1;
-  while(isOpen(con)&(!stringr::str_starts(ln,paste0("[:blank:]*END ",type)))){
-    cat("\t",nl,":\t",ln,"\n");
-    if (stringr::str_starts(ln,"[[:blank:]*#]")){
-      #--skip line
-    } else {
-      #--read section
-      # option = parseVal(ln);
-      # cat("option =",option,"\n");
-      # lst[["option"]] = option;
-      #--do option!
-    }
-    ln=readLines(con,n=1); nl=nl+1;
-  }#--while
+  #--read section
   cat(type,"section ended on line",nl,"\n");
   return(list(nl=nl,lst=lst));
 }
@@ -282,19 +226,7 @@ readCTL_FishingMortality<-function(con,nl){
   cat("reading",type,"section starting on line",nl,"\n");
   lst = list();
   ln=readLines(con,n=1); nl=nl+1;
-  while(isOpen(con)&(!stringr::str_starts(ln,paste0("[:blank:]*END ",type)))){
-    cat("\t",nl,":\t",ln,"\n");
-    if (stringr::str_starts(ln,"[[:blank:]*#]")){
-      #--skip line
-    } else {
-      #--read section
-      # option = parseVal(ln);
-      # cat("option =",option,"\n");
-      # lst[["option"]] = option;
-      #--do option!
-    }
-    ln=readLines(con,n=1); nl=nl+1;
-  }#--while
+  #--read section
   cat(type,"section ended on line",nl,"\n");
   return(list(nl=nl,lst=lst));
 }
@@ -304,22 +236,10 @@ readCTL_SurveyIndices<-function(con,nl){
   cat("reading",type,"section starting on line",nl,"\n");
   lst = list();
   ln=readLines(con,n=1); nl=nl+1;
-  while(isOpen(con)&(!stringr::str_starts(ln,paste0("[:blank:]*END ",type)))){
-    cat("\t",nl,":\t",ln,"\n");
-    if (stringr::str_starts(ln,"[[:blank:]*#]")){
-      #--skip line
-    } else {
-      #--read section
-      # option = parseVal(ln);
-      # cat("option =",option,"\n");
-      # lst[["option"]] = option;
-      #--do option!
-    }
-    ln=readLines(con,n=1); nl=nl+1;
-  }#--while
+  #--read section
   cat(type,"section ended on line",nl,"\n");
   return(list(nl=nl,lst=lst));
 }
 
-tst = readCTL("test_ctl.txt");
+#tst = readCTL("test_ctl.txt");
 

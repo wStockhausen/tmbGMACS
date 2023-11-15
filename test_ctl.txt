@@ -141,64 +141,147 @@ INITIAL ABUNDANCE--##########################################################
 END INITIAL ABUNDANCE SECTION
 
 ################################################################################
+ALLOMETRY--################################################################
+##--weight-at-size function types
+###--1. PL: power-law (alpha*Z^beta)
+###--2. NP: nonparametric
+##------------------------------------------------------------------------------
+  id  time_block    x     m     type   label
+  1       all     male   all     PL    males
+  2       all   female immature  PL    immature_males
+  3       all   female  mature   NP    mature_females
+  END TABLE
+##------------------------------------------------------------------------------
+
+##--weight-at-size reference parameters
+## ———————————————————————————————————————————————————————————————————————————————————— ##
+  fcn_id    param    par_id   ref_time   scale   units   ival     lb        ub    phz  pr_type   p1   p2   offsets  covars   label
+    1       alpha       1        NA      arith   grams  0.00027  0.00025 0.00029  -1    none     NA   NA    FALSE   FALSE    males
+    1       beta        2        NA      arith   none   3.022134 2.7     3.3      -1    none     NA   NA    FALSE   FALSE    males
+    2       alpha       3        NA      arith   grams  0.000562 0.0004  0.0007   -1    none     NA   NA    FALSE   FALSE    immature_females
+    2       beta        4        NA      arith   none   2.816928 2.5     3.1      -1    none     NA   NA    FALSE   FALSE    immature_females
+  END TABLE
+## ———————————————————————————————————————————————————————————————————————————————————— ##
+
+##--weight-at-size non-parametric reference parameters
+## ———————————————————————————————————————————————————————————————————————————————————— ##
+fcn_id  param  par_id  ref_time  size  scale  units  ival  lb  ub  phz  type  p1  p2  offsets  covars  label
+3  w_at_z   1  NA   27  arith  KG  0.006262951  0.003131476  0.009394427  -1  none  NA  NA  FALSE  FALSE  mature_females
+3  w_at_z   2  NA   32  arith  KG  0.010226421  0.005113211  0.015339632  -1  none  NA  NA  FALSE  FALSE  mature_females
+3  w_at_z   3  NA   37  arith  KG  0.015556268  0.007778134  0.023334402  -1  none  NA  NA  FALSE  FALSE  mature_females
+3  w_at_z   4  NA   42  arith  KG  0.022443028  0.011221514  0.033664542  -1  none  NA  NA  FALSE  FALSE  mature_females
+3  w_at_z   5  NA   47  arith  KG  0.031074627  0.015537314  0.046611941  -1  none  NA  NA  FALSE  FALSE  mature_females
+3  w_at_z   6  NA   52  arith  KG  0.04163672   0.02081836   0.06245508   -1  none  NA  NA  FALSE  FALSE  mature_females
+3  w_at_z   7  NA   57  arith  KG  0.054312964  0.027156482  0.081469446  -1  none  NA  NA  FALSE  FALSE  mature_females
+3  w_at_z   8  NA   62  arith  KG  0.069285227  0.034642614  0.103927841  -1  none  NA  NA  FALSE  FALSE  mature_females
+3  w_at_z   9  NA   67  arith  KG  0.086733763  0.043366882  0.130100645  -1  none  NA  NA  FALSE  FALSE  mature_females
+3  w_at_z  10  NA   72  arith  KG  0.106837354  0.053418677  0.160256031  -1  none  NA  NA  FALSE  FALSE  mature_females
+3  w_at_z  11  NA   77  arith  KG  0.129773434  0.064886717  0.194660151  -1  none  NA  NA  FALSE  FALSE  mature_females
+3  w_at_z  12  NA   82  arith  KG  0.155718187  0.077859094  0.233577281  -1  none  NA  NA  FALSE  FALSE  mature_females
+3  w_at_z  13  NA   87  arith  KG  0.184846644  0.092423322  0.277269966  -1  none  NA  NA  FALSE  FALSE  mature_females
+3  w_at_z  14  NA   92  arith  KG  0.217332751  0.108666376  0.325999127  -1  none  NA  NA  FALSE  FALSE  mature_females
+3  w_at_z  15  NA   97  arith  KG  0.253349448  0.126674724  0.380024172  -1  none  NA  NA  FALSE  FALSE  mature_females
+3  w_at_z  16  NA  102  arith  KG  0.293068719  0.14653436   0.439603079  -1  none  NA  NA  FALSE  FALSE  mature_females
+3  w_at_z  17  NA  107  arith  KG  0.336661656  0.168330828  0.504992484  -1  none  NA  NA  FALSE  FALSE  mature_females
+3  w_at_z  18  NA  112  arith  KG  0.384298499  0.19214925   0.576447749  -1  none  NA  NA  FALSE  FALSE  mature_females
+3  w_at_z  19  NA  117  arith  KG  0.436148684  0.218074342  0.654223026  -1  none  NA  NA  FALSE  FALSE  mature_females
+3  w_at_z  20  NA  122  arith  KG  0.492380882  0.246190441  0.738571323  -1  none  NA  NA  FALSE  FALSE  mature_females
+3  w_at_z  21  NA  127  arith  KG  0.553163035  0.276581518  0.829744553  -1  none  NA  NA  FALSE  FALSE  mature_females
+3  w_at_z  22  NA  132  arith  KG  0.618662389  0.309331195  0.927993584  -1  none  NA  NA  FALSE  FALSE  mature_females
+3  w_at_z  23  NA  137  arith  KG  0.689045521  0.344522761  1.033568282  -1  none  NA  NA  FALSE  FALSE  mature_females
+3  w_at_z  24  NA  142  arith  KG  0.764478374  0.382239187  1.146717561  -1  none  NA  NA  FALSE  FALSE  mature_females
+3  w_at_z  25  NA  147  arith  KG  0.845126274  0.422563137  1.267689411  -1  none  NA  NA  FALSE  FALSE  mature_females
+3  w_at_z  26  NA  152  arith  KG  0.93115396   0.46557698   1.39673094   -1  none  NA  NA  FALSE  FALSE  mature_females
+3  w_at_z  27  NA  157  arith  KG  1.022725604  0.511362802  1.534088406  -1  none  NA  NA  FALSE  FALSE  mature_females
+3  w_at_z  28  NA  162  arith  KG  1.120004832  0.560002416  1.680007248  -1  none  NA  NA  FALSE  FALSE  mature_females
+3  w_at_z  29  NA  167  arith  KG  1.22315474   0.61157737   1.83473211   -1  none  NA  NA  FALSE  FALSE  mature_females
+3  w_at_z  30  NA  172  arith  KG  1.332337918  0.666168959  1.998506877  -1  none  NA  NA  FALSE  FALSE  mature_females
+3  w_at_z  31  NA  177  arith  KG  1.447716461  0.723858231  2.171574692  -1  none  NA  NA  FALSE  FALSE  mature_females
+3  w_at_z  32  NA  182  arith  KG  1.569451989  0.784725995  2.354177984  -1  none  NA  NA  FALSE  FALSE  mature_females
+END TABLE
+## ———————————————————————————————————————————————————————————————————————————————————— ##
+END ALLOMETRY SECTION
+
+################################################################################
 RECRUITMENT--################################################################
 ##--size-at-recruitment function types
-###--1. gamma
-###--2. np (nonparametric)
+###--1. gamma (alpha, beta parameters)
+###--2. np    (nonparametric)
 ##--annual rec types
 ###--1. noSR1   (no stock-recruit relationship, ln-scale offsets)
 ###--2. noSR-RW (no stock-recruit relationship, ln-scale RW offsets)
-##------------------------------------------------------------------------------
-  id  time_block  sex  size_fcn rec_type  label
-  1   2001:2005   all   gama     noSR1    basic_rec
-  END TABLE
-##------------------------------------------------------------------------------
-
-##--size function parameters
-## ———————————————————————————————————————————————————————————————————————————————————— ##
-  id	fcn_id time_block  param  scale	units	ival	lb	ub	  phz	 type	p1	p2   devs     label
-  1      1   2001:2005   alpha   ln   none  9.33  2.7 56.0   5   none  0   0     0       alpha
-  2      1   2001:2005   beta    ln   none  3.86  1.0  3.9   5   none  0   0     0       beta
-  END TABLE
-## ———————————————————————————————————————————————————————————————————————————————————— ##
-##--size function parameter devs
-## ———————————————————————————————————————————————————————————————————————————————————— ##
-#  id	par_id time_block  param  scale	units	phz  RE ival	type	p1	p2  env_covars label
-#  1      1   2001:2005 dvs_alpha  ar   none  5   no  0.0  normal  0   1     0     dvs_alpha
-#  2      2   2001:2005 dvs_beta   ar   none  5   no  0.0  normal  0   1     0     dvs_beta
-#  END TABLE
-## ———————————————————————————————————————————————————————————————————————————————————— ##
-##--size function parameter dev covariates
-## ———————————————————————————————————————————————————————————————————————————————————— ##
-#  id	devs_id time_block  param  scale	units	phz  RE ival	type	p1	p2  env_covars label
-#  1      1   2001:2005  cov_alpha  ar    none  5    no  0.0  normal  0   1     0    cov_alpha
-#  2      2   2001:2005  cov_beta   ar    none  5    no  0.0  normal  0   1     0    cov_beta
-#  END TABLE
-## ———————————————————————————————————————————————————————————————————————————————————— ##
-
-##--annual recruitment parameters
-## ———————————————————————————————————————————————————————————————————————————————————— ##
-  id	fcn_id time_block  scale	units	    phz  ival	  lb	 ub	  type	   p1	 p2  param
-  1      1   2001:2005     ln   millions   1    5.9  1.0  10.0  normal   6   1   lnR
-  END TABLE
-## ———————————————————————————————————————————————————————————————————————————————————— ##
-
-##--sex-ratio parameters (logit-scale)
 ##--sex ratio function types
-###--1. estimated constant
+###--1. constant: estimated constant
+
+##--recruitment function
+##------------------------------------------------------------------------------
+  fcn_id  time_block  sex  size_fcn rec_type  sex_ratio label
+     1    2001:2005   all   gamma     noSR1   constant  basic_rec
+  END TABLE
+##------------------------------------------------------------------------------
+
+##--total recruitment reference parameters
 ## ———————————————————————————————————————————————————————————————————————————————————— ##
-  id	fcn_id time_block  param  scale	units	phz ival	lb	ub	type	p1	p2   devs     label
-  1      1   2001:2005   theta  ar    none  -5   0.5  0.4 0.6 none  0   0     0      theta
+fcn_id  param  par_id   ref_time   scale   units   phz   ival lb    ub   pr_type   p1   p2   offsets  covars   label
+  1      lnR     1        2001      ln    millions  1    5.9  1.0  10.0  normal     6   1    TRUE     FALSE    lnR
   END TABLE
 ## ———————————————————————————————————————————————————————————————————————————————————— ##
-##--no devs (TODO?)
-##--no covariates (TODO?)
+##--total recruitment offset parameters
+## ———————————————————————————————————————————————————————————————————————————————————— ##
+par_id  off_id  time_block  param  scale  units    phz  off_type  RE    ival  pr_type  p1  p2  label
+   1       1     2001:2005  lnR      ln   none     1    offset  FALSE   0     normal   0  1   ln_rec_offsets
+   END TABLE
+## ———————————————————————————————————————————————————————————————————————————————————— ##
+##--total recruitment parameter covariates
+## ———————————————————————————————————————————————————————————————————————————————————— ##
+#  par_id  cov_id  covar  time_block  param  scale  units  phz  RE     ival  type  p1  p2  label
+#  END TABLE
+## ———————————————————————————————————————————————————————————————————————————————————— ##
+
+##--size function reference parameters
+## ———————————————————————————————————————————————————————————————————————————————————— ##
+fcn_id  param  par_id   ref_time   scale  units  phz   ival lb    ub   pr_type   p1   p2   offsets  covars   label
+  1     alpha    1       2001        ln   none    5    9.33  2.7 56.0  none      0    0    FALSE   FALSE      alpha
+  1     beta     2       2001        ln   none    5    3.86  1.0  3.9  none      0    0    FALSE   FALSE      beta
+  END TABLE
+## ———————————————————————————————————————————————————————————————————————————————————— ##
+##--size function offset parameters
+## ———————————————————————————————————————————————————————————————————————————————————— ##
+#par_id  off_id  time_block  param  scale  units    phz  off_type  RE    ival  pr_type  p1  p2  label
+#  1      1      2001:2005   alpha  ar     none      5   offset   FALSE  0.0   normal   0   1   alpha_devs
+#  2      2      2001:2005   beta   ar     none      5     RW     FALSE  0.0   normal   0   1   beta_devs
+#  END TABLE
+## ———————————————————————————————————————————————————————————————————————————————————— ##
+##--size function parameter covariates
+## ———————————————————————————————————————————————————————————————————————————————————— ##
+#  par_id  cov_id  covar  time_block  param  scale  units  phz  RE     ival  type  p1  p2  label
+#  1          1     e1     2001:2005  alpha    ar    none  5    FALSE  0.0  normal  0   1   cov_alpha
+#  2          2     e1     2001:2005  beta     ar    none  5    FALSE  0.0  normal  0   1   cov_beta
+#  END TABLE
+## ———————————————————————————————————————————————————————————————————————————————————— ##
+
+##--sex ratio reference parameters
+## ———————————————————————————————————————————————————————————————————————————————————— ##
+ fcn_id  param  par_id   ref_time   scale   units   phz   ival lb    ub   pr_type   p1   p2   offsets  covars   label
+    1    theta    1        2001      ar     none    -5    0.5  0.4   0.6  none      0    0     FALSE   FALSE    theta
+  END TABLE
+## ———————————————————————————————————————————————————————————————————————————————————— ##
+##--sex ratio offset parameters
+## ———————————————————————————————————————————————————————————————————————————————————— ##
+#  par_id  off_id  time_block  param  scale  units    phz  off_type  RE    ival  pr_type  p1  p2  label
+#  END TABLE
+## ———————————————————————————————————————————————————————————————————————————————————— ##
+##--total recruitment parameter covariates
+## ———————————————————————————————————————————————————————————————————————————————————— ##
+#  par_id  cov_id  covar  time_block  param  scale  units  phz  RE     ival  type  p1  p2  label
+#  END TABLE
+## ———————————————————————————————————————————————————————————————————————————————————— ##
 END RECRUITMENT SECTION
 
 ################################################################################
 NATURAL MORTALITY--################################################################
-##--lnM = ln(M_ref) + ln(f(z))
-##--reference (M_ref) types
+##--lnM = lnM_ref + ln(f(z))
+##--reference (lnM_ref) types
 ###--1. constant (i.e., time-invariant)
 ###--2. t-v: time-varying
 ###--3. t-v-c: time-varying with covariates
@@ -212,11 +295,11 @@ NATURAL MORTALITY--#############################################################
   END TABLE
 ##------------------------------------------------------------------------------
 
-##--natural mortality parameters
+##--natural mortality parameters (lnM)
 ## ———————————————————————————————————————————————————————————————————————————————————— ##
   id  fcn_id scale  units      phz  ival    lb   ub    type     p1    p2  param
-  1      1   arith per-year     1   0.23   0.01 3.00 lognormal  0.23   1  imm_lnR_ref
-  2      2   arith per-year     1   0.30   0.01 3.00 lognormal  0.30   1  mat_lnR_ref
+  1      1   arith per-year     1   0.23   0.01 3.00 lognormal  0.23   1  imm_M_ref
+  2      2   arith per-year     1   0.30   0.01 3.00 lognormal  0.30   1  mat_M_ref
   END TABLE
 ## ———————————————————————————————————————————————————————————————————————————————————— ##
 END NATURAL MORTALITY SECTION

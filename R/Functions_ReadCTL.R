@@ -10,14 +10,18 @@ readCTL<-function(fn){
         res = readCTL_InitialAbundance(con,nl);
         nl = res$nl;
         lst[["InitAbd"]] = res$lst;
+    } else if (stringr::str_starts(ln,"[:blank:]*ALLOMETRY")){
+        res = readCTL_Allometry(con,nl);
+        nl = res$nl;
+        lst[["allom"]] = res$lst;
     } else if (stringr::str_starts(ln,"[:blank:]*RECRUITMENT")){
         res = readCTL_Recruitment(con,nl);
         nl = res$nl;
         lst[["rec"]] = res$lst;
-    } else if (stringr::str_starts(ln,"[:blank:]*NATURAL MORTALITY")){
-        res = readCTL_NaturalMortality(con,nl);
-        nl = res$nl;
-        lst[["nm"]] = res$lst;
+    # } else if (stringr::str_starts(ln,"[:blank:]*NATURAL MORTALITY")){
+    #     res = readCTL_NaturalMortality(con,nl);
+    #     nl = res$nl;
+    #     lst[["nm"]] = res$lst;
     # } else if (stringr::str_starts(ln,"[:blank:]*GROWTH")){
     #     res = readCTL_Growth(con,nl);
     #     nl = res$nl;
@@ -77,8 +81,12 @@ readParamsTable<-function(con,nl){
       #--skip line
       cat("skipping line: ",ln,"\n")
     } else {
-      str = paste0(str,"\n",ln);
-      #cat("building up table string:\n",str,"\n")
+      lnp = stringr::str_squish(ln);#--remove beginning and ending whitespace, collapse interior whitespace
+      if (lnp!=""){
+        str = paste0(str,"\n",lnp); #--append non-blank line
+      } else {
+        cat("skipping blank line: ",ln,"\n")
+      }
     }
     ln=readLines(con,n=1); nl=nl+1;
   }
@@ -134,6 +142,43 @@ readCTL_InitialAbundance<-function(con,nl){
   return(list(nl=nl,lst=lst));
 }
 
+readCTL_Allometry<-function(con,nl){
+  type = "ALLOMETRY";
+  cat("reading",type,"section starting on line",nl,"\n");
+  lst = list();
+
+  #--read allometry function section
+  cat("reading allometry function section\n")
+  res = readParamsTable(con,nl);
+  nl = res$nl;
+  lst[["fcns"]] = res$tbl;
+  rm(res);
+
+  #--read allometry function parameters
+  cat("reading allometry (reference) parameters section\n")
+  res = readParamsTable(con,nl);
+  nl = res$nl;
+  lst[["ref_pars"]] = res$tbl;
+  rm(res);
+
+  #--read allometry nonparametric parameters
+  if (any(lst[["fcns"]]$type=="NP")){
+    res = readParamsTable(con,nl);
+    nl = res$nl;
+    lst[["ref_nonpars"]] = res$tbl;
+  }
+
+  #--read to end of section
+  ln=readLines(con,n=1); nl=nl+1;
+  while(isOpen(con)&(!stringr::str_starts(ln,paste0("[:blank:]*END ",type)))){
+    cat("\t",nl,":\t",ln,"\n");
+    ln=readLines(con,n=1); nl=nl+1;
+    cat(stringr::str_starts(ln,paste0("[:blank:]*END ",type)),"\t","\n")
+  }#--while
+  cat(type,"section ended on line",nl,"\n");
+  return(list(nl=nl,lst=lst));
+}
+
 readCTL_Recruitment<-function(con,nl){
   type = "RECRUITMENT";
   cat("reading",type,"section starting on line",nl,"\n");
@@ -145,32 +190,77 @@ readCTL_Recruitment<-function(con,nl){
   lst[["rec_fcns"]] = res$tbl;
   rm(res);
 
+  #--bulk recruitment reference params
+  cat("reading recruitment reference parameters section\n")
+  res = readParamsTable(con,nl);
+  nl = res$nl;
+  lst[["rec_pars"]] = res$tbl;
+  rm(res);
+  if (any(lst[["rec_pars"]]$offsets)){
+    #--bulk recruitment offset params
+    cat("reading recruitment offset parameters section\n")
+    res = readParamsTable(con,nl);
+    nl = res$nl;
+    lst[["rec_offset_pars"]] = res$tbl;
+    rm(res);
+  }
+  if (any(lst[["rec_pars"]]$covars)){
+    #--bulk recruitment environmental covariates params
+    cat("reading recruitment environmental covariates parameters section\n")
+    res = readParamsTable(con,nl);
+    nl = res$nl;
+    lst[["rec_covars"]] = res$tbl;
+    rm(res);
+  }
+
   #--read size function parameters section
   cat("reading recruitment-at-size parameters section\n")
+  cat("reading recruitment-at-size reference parameters\n")
   res = readParamsTable(con,nl);
   nl = res$nl;
   lst[["rec_z_pars"]] = res$tbl;
   rm(res);
-  #--read size function parameter devs section
-  #cat("reading size function parameter devs section\n")
-  #--read size function parameter dev covariates section
-  #cat("reading size function parameter dev covariates section\n")
-
-  #--annual rec params
-  cat("reading recruitment parameters section\n")
-  res = readParamsTable(con,nl);
-  nl = res$nl;
-  lst[["rec_pars"]] = res$tbl;
-  rm(res);
+  if (any(lst[["rec_z_pars"]]$offsets)){
+    #--bulk recruitment-at-size offset params
+    cat("reading recruitment-at-size offset parameters section\n")
+    res = readParamsTable(con,nl);
+    nl = res$nl;
+    lst[["rec_offset_z_pars"]] = res$tbl;
+    rm(res);
+  }
+  if (any(lst[["rec_z_pars"]]$covars)){
+    #--bulk recruitment-at-size environmental covariates params
+    cat("reading recruitment-at-size environmental covariates parameters section\n")
+    res = readParamsTable(con,nl);
+    nl = res$nl;
+    lst[["rec_covars_z_pars"]] = res$tbl;
+    rm(res);
+  }
 
   #--annual sex ratio
   cat("reading annual sex ratio section\n")
+  cat("reading sex ratio reference parameters\n")
   res = readParamsTable(con,nl);
   nl = res$nl;
-  lst[["rec_pars"]] = res$tbl;
+  lst[["sexrat_pars"]] = res$tbl;
   rm(res);
-  #--read size function parameter devs section
-  #--read size function parameter dev covariates section
+  if (any(lst[["sexrat_pars"]]$offsets)){
+    #--sex ratio offset params
+    cat("reading sex ratio offset parameters section\n")
+    res = readParamsTable(con,nl);
+    nl = res$nl;
+    lst[["sexrat_offset_pars"]] = res$tbl;
+    rm(res);
+  }
+  if (any(lst[["sexrat_pars"]]$covars)){
+    #--sex ratio environmental covariates params
+    cat("reading sex ratio environmental covariates parameters section\n")
+    res = readParamsTable(con,nl);
+    nl = res$nl;
+    lst[["sexrat_covars_pars"]] = res$tbl;
+    rm(res);
+  }
+
   ln=readLines(con,n=1); nl=nl+1;
   while(isOpen(con)&(!stringr::str_starts(ln,paste0("[:blank:]*END ",type)))){
     cat("\t",nl,":\t",ln,"\n");

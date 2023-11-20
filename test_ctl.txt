@@ -14,11 +14,13 @@ INITIAL ABUNDANCE--##########################################################
    id     x   scale    units  ival    lb      ub     phz   pr_type  p1    p2  label
     1    all   ar    millions 100     50     150      1      LN     100    20   R0
     END TABLE
+###-------------------------------------------------------------------------------------
 ###--Option 3: parameters (Rini)
 ###-------------------------------------------------------------------------------------
 #   id     x   scale    units  ival    lb      ub     phz  pr_type    p1    p2  label
 #    1    all   ar    millions 100     50     150      1      LN     100    20  Rini
 # END TABLE
+###-------------------------------------------------------------------------------------
 ###--Option 4: free parameters
 ####--reference classes
 ###-------------------------------------------------------------------------------------
@@ -280,27 +282,35 @@ END RECRUITMENT SECTION
 
 ################################################################################
 NATURAL MORTALITY--################################################################
-##--lnM = lnM_ref + ln(f(z))
-##--reference (lnM_ref) types
-###--1. constant (i.e., time-invariant)
-###--2. t-v: time-varying
-###--3. t-v-c: time-varying with covariates
+##--lnM = lnM_ref + lnM_off + lnM_cov + ln(f(z))
 ##--size function (f(z)) types
 ###--1. constant (1)
 ###--2. Lorenzen (1/z)
 ##------------------------------------------------------------------------------
-  id  y          c     x       m       s  ref_fcn  size_fcn label
-  1   2001:2005  all  all   immature all  constant constant Mi
-  2   2001:2005  all  all    mature  all  constant constant Mm 
+  id  y          c     x       m       s  size_fcn label
+  1   2001:2005  all  all   immature all  constant Mi
+  2   2001:2005  all  all    mature  all  constant Mm 
   END TABLE
 ##------------------------------------------------------------------------------
 
-##--natural mortality parameters (lnM)
+##--natural mortality reference parameters
 ## ———————————————————————————————————————————————————————————————————————————————————— ##
-  id  fcn_id scale  units      phz  ival    lb   ub    type     p1    p2  param
-  1      1   arith per-year     1   0.23   0.01 3.00 lognormal  0.23   1  imm_M_ref
-  2      2   arith per-year     1   0.30   0.01 3.00 lognormal  0.30   1  mat_M_ref
+ fcn_id  param  par_id   ref_time   scale   units   phz   ival  lb    ub  pr_type   p1     p2   offsets  covars   label
+   1      lnM     1       2001      arith per-year   1   0.23   0.01 3.00 lognormal  0.23   1   TRUE    FALSE    imm_M_ref
+   2      lnM     2       2001      arith per-year   1   0.30   0.01 3.00 lognormal  0.30   1   TRUE    FALSE    mat_M_ref
   END TABLE
+## ———————————————————————————————————————————————————————————————————————————————————— ##
+##--natural mortality offset parameters
+## ———————————————————————————————————————————————————————————————————————————————————— ##
+par_id  off_id  time_block  param  scale  units    phz  off_type  RE    ival  pr_type    p1  p2  label
+   1       1    2001:2005    lnM    ln   per-year   1   offset   FALSE  0.0   normal    0.0   1   imm_M_devs
+   2       2    2001:2005    lnM    ln   per-year   1     RW     FALSE  0.0   normal    0.0   1   mat_M_devs
+  END TABLE
+## ———————————————————————————————————————————————————————————————————————————————————— ##
+##--natural mortality parameter covariates
+## ———————————————————————————————————————————————————————————————————————————————————— ##
+#  par_id  cov_id  covar  time_block  param  scale  units  phz  RE     ival  type  p1  p2  label
+#  END TABLE
 ## ———————————————————————————————————————————————————————————————————————————————————— ##
 END NATURAL MORTALITY SECTION
 

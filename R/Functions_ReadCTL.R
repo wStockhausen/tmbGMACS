@@ -1,55 +1,4 @@
-readCTL<-function(fn){
-  if (!file.exists(fn)) stop("File ",fn," does not exist!");
-  con = file(fn,open="r");
-  lst = list();
-  ln=readLines(con,n=1); nl=1;
-  while(ln!="END CTL FILE"){
-    if (stringr::str_starts(ln,"[:blank:]*#")){
-      #--skip line
-    } else if (stringr::str_starts(ln,"[:blank:]*INITIAL ABUNDANCE")){
-        res = readCTL_InitialAbundance(con,nl);
-        nl = res$nl;
-        lst[["InitAbd"]] = res$lst;
-    } else if (stringr::str_starts(ln,"[:blank:]*ALLOMETRY")){
-        res = readCTL_Allometry(con,nl);
-        nl = res$nl;
-        lst[["allom"]] = res$lst;
-    } else if (stringr::str_starts(ln,"[:blank:]*RECRUITMENT")){
-        res = readCTL_Recruitment(con,nl);
-        nl = res$nl;
-        lst[["rec"]] = res$lst;
-    # } else if (stringr::str_starts(ln,"[:blank:]*NATURAL MORTALITY")){
-    #     res = readCTL_NaturalMortality(con,nl);
-    #     nl = res$nl;
-    #     lst[["nm"]] = res$lst;
-    # } else if (stringr::str_starts(ln,"[:blank:]*GROWTH")){
-    #     res = readCTL_Growth(con,nl);
-    #     nl = res$nl;
-    #     lst[["grw"]] = res$lst;
-    # } else if (stringr::str_starts(ln,"[:blank:]*MATURITY")){
-    #     res = readCTL_Maturity(con,nl);
-    #     nl = res$nl;
-    #     lst[["mat"]] = res$lst;
-    # } else if (stringr::str_starts(ln,"[:blank:]*SELECTIVITY")){
-    #     res = readCTL_Selectivity(con,nl);
-    #     nl = res$nl;
-    #     lst[["sel"]] = res$lst;
-    # } else if (stringr::str_starts(ln,"[:blank:]*FISHING MORTALITY")){
-    #     res = readCTL_FishingMortality(con,nl);
-    #     nl = res$nl;
-    #     lst[["fsh"]] = res$lst;
-    # } else if (stringr::str_starts(ln,"[:blank:]*SURVEY INDICES")){
-    #     res = readCTL_SurveyIndices(con,nl);
-    #     nl = res$nl;
-    #     lst[["srv"]] = res$lst;
-    }
-    ln=readLines(con,n=1); nl = nl+1;
-    cat("in readCTL",nl,"\n\t",ln,"\n");
-  }
-  cat("CTL file: reached END CTL FILE at line",nl,"\n");
-  close(con);
-  return(lst);
-}
+#--functions for reading the CTL file
 
 parseVal<-function(con,nl,ln=NULL){
   if (is.null(ln)) ln=readLines(con,n=1); nl=nl+1;#--read next line
@@ -94,6 +43,59 @@ readParamsTable<-function(con,nl){
   cat("table:\n",str,"\n");
   tbl = readr::read_table(I(str),skip=1,comment="#");
   return(list(nl=nl,tbl=tbl));
+}
+
+readCTL<-function(fn){
+  if (!file.exists(fn)) stop("File ",fn," does not exist!");
+  con = file(fn,open="r");
+  lst = list();
+  ln=readLines(con,n=1); nl=1;
+  while(ln!="END CTL FILE"){
+    if (stringr::str_starts(ln,"[:blank:]*#")){
+      #--skip line
+    } else if (stringr::str_starts(ln,"[:blank:]*INITIAL ABUNDANCE")){
+        res = readCTL_InitialAbundance(con,nl);
+        nl = res$nl;
+        lst[["InitAbd"]] = res$lst;
+    } else if (stringr::str_starts(ln,"[:blank:]*ALLOMETRY")){
+        res = readCTL_Allometry(con,nl);
+        nl = res$nl;
+        lst[["allom"]] = res$lst;
+    } else if (stringr::str_starts(ln,"[:blank:]*RECRUITMENT")){
+        res = readCTL_Recruitment(con,nl);
+        nl = res$nl;
+        lst[["rec"]] = res$lst;
+    } else if (stringr::str_starts(ln,"[:blank:]*NATURAL MORTALITY")){
+        res = readCTL_NaturalMortality(con,nl);
+        nl = res$nl;
+        lst[["nm"]] = res$lst;
+    # } else if (stringr::str_starts(ln,"[:blank:]*GROWTH")){
+    #     res = readCTL_Growth(con,nl);
+    #     nl = res$nl;
+    #     lst[["grw"]] = res$lst;
+    # } else if (stringr::str_starts(ln,"[:blank:]*MATURITY")){
+    #     res = readCTL_Maturity(con,nl);
+    #     nl = res$nl;
+    #     lst[["mat"]] = res$lst;
+    # } else if (stringr::str_starts(ln,"[:blank:]*SELECTIVITY")){
+    #     res = readCTL_Selectivity(con,nl);
+    #     nl = res$nl;
+    #     lst[["sel"]] = res$lst;
+    # } else if (stringr::str_starts(ln,"[:blank:]*FISHING MORTALITY")){
+    #     res = readCTL_FishingMortality(con,nl);
+    #     nl = res$nl;
+    #     lst[["fsh"]] = res$lst;
+    # } else if (stringr::str_starts(ln,"[:blank:]*SURVEY INDICES")){
+    #     res = readCTL_SurveyIndices(con,nl);
+    #     nl = res$nl;
+    #     lst[["srv"]] = res$lst;
+    }
+    ln=readLines(con,n=1); nl = nl+1;
+    cat("in readCTL",nl,"\n\t",ln,"\n");
+  }
+  cat("CTL file: reached END CTL FILE at line",nl,"\n");
+  close(con);
+  return(lst);
 }
 
 readCTL_InitialAbundance<-function(con,nl){
@@ -194,17 +196,17 @@ readCTL_Recruitment<-function(con,nl){
   cat("reading recruitment reference parameters section\n")
   res = readParamsTable(con,nl);
   nl = res$nl;
-  lst[["rec_pars"]] = res$tbl;
+  lst[["rec_ref_pars"]] = res$tbl;
   rm(res);
-  if (any(lst[["rec_pars"]]$offsets)){
+  if (any(lst[["rec_ref_pars"]]$offsets)){
     #--bulk recruitment offset params
     cat("reading recruitment offset parameters section\n")
     res = readParamsTable(con,nl);
     nl = res$nl;
-    lst[["rec_offset_pars"]] = res$tbl;
+    lst[["rec_off_pars"]] = res$tbl;
     rm(res);
   }
-  if (any(lst[["rec_pars"]]$covars)){
+  if (any(lst[["rec_ref_pars"]]$covars)){
     #--bulk recruitment environmental covariates params
     cat("reading recruitment environmental covariates parameters section\n")
     res = readParamsTable(con,nl);
@@ -218,22 +220,22 @@ readCTL_Recruitment<-function(con,nl){
   cat("reading recruitment-at-size reference parameters\n")
   res = readParamsTable(con,nl);
   nl = res$nl;
-  lst[["rec_z_pars"]] = res$tbl;
+  lst[["rec-z_ref_pars"]] = res$tbl;
   rm(res);
-  if (any(lst[["rec_z_pars"]]$offsets)){
+  if (any(lst[["rec-z_ref_pars"]]$offsets)){
     #--bulk recruitment-at-size offset params
     cat("reading recruitment-at-size offset parameters section\n")
     res = readParamsTable(con,nl);
     nl = res$nl;
-    lst[["rec_offset_z_pars"]] = res$tbl;
+    lst[["rec-z_off_pars"]] = res$tbl;
     rm(res);
   }
-  if (any(lst[["rec_z_pars"]]$covars)){
+  if (any(lst[["rec-z_ref_pars"]]$covars)){
     #--bulk recruitment-at-size environmental covariates params
     cat("reading recruitment-at-size environmental covariates parameters section\n")
     res = readParamsTable(con,nl);
     nl = res$nl;
-    lst[["rec_covars_z_pars"]] = res$tbl;
+    lst[["rec-z_covars"]] = res$tbl;
     rm(res);
   }
 
@@ -242,22 +244,22 @@ readCTL_Recruitment<-function(con,nl){
   cat("reading sex ratio reference parameters\n")
   res = readParamsTable(con,nl);
   nl = res$nl;
-  lst[["sexrat_pars"]] = res$tbl;
+  lst[["sexrat_ref_pars"]] = res$tbl;
   rm(res);
-  if (any(lst[["sexrat_pars"]]$offsets)){
+  if (any(lst[["sexrat_ref_pars"]]$offsets)){
     #--sex ratio offset params
     cat("reading sex ratio offset parameters section\n")
     res = readParamsTable(con,nl);
     nl = res$nl;
-    lst[["sexrat_offset_pars"]] = res$tbl;
+    lst[["sexrat_off_pars"]] = res$tbl;
     rm(res);
   }
-  if (any(lst[["sexrat_pars"]]$covars)){
+  if (any(lst[["sexrat_ref_pars"]]$covars)){
     #--sex ratio environmental covariates params
     cat("reading sex ratio environmental covariates parameters section\n")
     res = readParamsTable(con,nl);
     nl = res$nl;
-    lst[["sexrat_covars_pars"]] = res$tbl;
+    lst[["sexrat_covars"]] = res$tbl;
     rm(res);
   }
 
@@ -275,8 +277,44 @@ readCTL_NaturalMortality<-function(con,nl){
   type = "NATURAL MORTALITY";
   cat("reading",type,"section starting on line",nl,"\n");
   lst = list();
+
+  #--read  function section
+  cat("reading natural mortality function section\n")
+  res = readParamsTable(con,nl);
+  nl = res$nl;
+  lst[["fcns"]] = res$tbl;
+  rm(res);
+
+  #--read reference parameters
+  cat("reading natural mortality reference parameters section\n")
+  res = readParamsTable(con,nl);
+  nl = res$nl;
+  lst[["ref_pars"]] = res$tbl;
+  rm(res);
+  #--read offset parameters
+  if (any(lst[["ref_pars"]]$offsets)){
+    cat("reading natural mortality offset parameters section\n")
+    res = readParamsTable(con,nl);
+    nl = res$nl;
+    lst[["off_pars"]] = res$tbl;
+    rm(res);
+  }
+  #--read covariate parameters
+  if (any(lst[["ref_pars"]]$covars)){
+    cat("reading natural mortality covariate parameters section\n")
+    res = readParamsTable(con,nl);
+    nl = res$nl;
+    lst[["covars"]] = res$tbl;
+    rm(res);
+  }
+
+  #--read to end of section
   ln=readLines(con,n=1); nl=nl+1;
-  #--read section
+  while(isOpen(con)&(!stringr::str_starts(ln,paste0("[:blank:]*END ",type)))){
+    cat("\t",nl,":\t",ln,"\n");
+    ln=readLines(con,n=1); nl=nl+1;
+    cat(stringr::str_starts(ln,paste0("[:blank:]*END ",type)),"\t","\n")
+  }#--while
   cat(type,"section ended on line",nl,"\n");
   return(list(nl=nl,lst=lst));
 }
@@ -285,8 +323,16 @@ readCTL_Growth<-function(con,nl){
   type = "GROWTH";
   cat("reading",type,"section starting on line",nl,"\n");
   lst = list();
-  ln=readLines(con,n=1); nl=nl+1;
+
   #--read section
+
+  #--read to end of section
+  ln=readLines(con,n=1); nl=nl+1;
+  while(isOpen(con)&(!stringr::str_starts(ln,paste0("[:blank:]*END ",type)))){
+    cat("\t",nl,":\t",ln,"\n");
+    ln=readLines(con,n=1); nl=nl+1;
+    cat(stringr::str_starts(ln,paste0("[:blank:]*END ",type)),"\t","\n")
+  }#--while
   cat(type,"section ended on line",nl,"\n");
   return(list(nl=nl,lst=lst));
 }
@@ -295,8 +341,16 @@ readCTL_Maturity<-function(con,nl){
   type = "MATURITY";
   cat("reading",type,"section starting on line",nl,"\n");
   lst = list();
-  ln=readLines(con,n=1); nl=nl+1;
+
   #--read section
+
+  #--read to end of section
+  ln=readLines(con,n=1); nl=nl+1;
+  while(isOpen(con)&(!stringr::str_starts(ln,paste0("[:blank:]*END ",type)))){
+    cat("\t",nl,":\t",ln,"\n");
+    ln=readLines(con,n=1); nl=nl+1;
+    cat(stringr::str_starts(ln,paste0("[:blank:]*END ",type)),"\t","\n")
+  }#--while
   cat(type,"section ended on line",nl,"\n");
   return(list(nl=nl,lst=lst));
 }
@@ -305,8 +359,16 @@ readCTL_Selectivity<-function(con,nl){
   type = "SELECTIVITY";
   cat("reading",type,"section starting on line",nl,"\n");
   lst = list();
-  ln=readLines(con,n=1); nl=nl+1;
+
   #--read section
+
+  #--read to end of section
+  ln=readLines(con,n=1); nl=nl+1;
+  while(isOpen(con)&(!stringr::str_starts(ln,paste0("[:blank:]*END ",type)))){
+    cat("\t",nl,":\t",ln,"\n");
+    ln=readLines(con,n=1); nl=nl+1;
+    cat(stringr::str_starts(ln,paste0("[:blank:]*END ",type)),"\t","\n")
+  }#--while
   cat(type,"section ended on line",nl,"\n");
   return(list(nl=nl,lst=lst));
 }
@@ -315,8 +377,16 @@ readCTL_FishingMortality<-function(con,nl){
   type = "FISHING MORTALITY";
   cat("reading",type,"section starting on line",nl,"\n");
   lst = list();
-  ln=readLines(con,n=1); nl=nl+1;
+
   #--read section
+
+  #--read to end of section
+  ln=readLines(con,n=1); nl=nl+1;
+  while(isOpen(con)&(!stringr::str_starts(ln,paste0("[:blank:]*END ",type)))){
+    cat("\t",nl,":\t",ln,"\n");
+    ln=readLines(con,n=1); nl=nl+1;
+    cat(stringr::str_starts(ln,paste0("[:blank:]*END ",type)),"\t","\n")
+  }#--while
   cat(type,"section ended on line",nl,"\n");
   return(list(nl=nl,lst=lst));
 }
@@ -325,11 +395,19 @@ readCTL_SurveyIndices<-function(con,nl){
   type = "SURVEY INDICES";
   cat("reading",type,"section starting on line",nl,"\n");
   lst = list();
-  ln=readLines(con,n=1); nl=nl+1;
+
   #--read section
+
+  #--read to end of section
+  ln=readLines(con,n=1); nl=nl+1;
+  while(isOpen(con)&(!stringr::str_starts(ln,paste0("[:blank:]*END ",type)))){
+    cat("\t",nl,":\t",ln,"\n");
+    ln=readLines(con,n=1); nl=nl+1;
+    cat(stringr::str_starts(ln,paste0("[:blank:]*END ",type)),"\t","\n")
+  }#--while
   cat(type,"section ended on line",nl,"\n");
   return(list(nl=nl,lst=lst));
 }
 
-#tst = readCTL("test_ctl.txt");
+tst = readCTL("test_ctl.txt");
 

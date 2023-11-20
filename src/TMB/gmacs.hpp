@@ -3,27 +3,24 @@
 #undef TMB_OBJECTIVE_PTR
 #define TMB_OBJECTIVE_PTR obj
 
-#include "../../include/gmacs_utils.hpp"
+#include "../../include/Model.hpp"
 
 // name of function _must_ match file name (gmacs)
 template<class Type>
 Type gmacs(objective_function<Type>* obj) {
-    DATA_STRING(mode);
-    DATA_VECTOR(dims);
+  PARAMETER_VECTOR(p);
 
-    PARAMETER_VECTOR(pars);
+  std::shared_ptr<gmacs::Model<Type>> model = gmacs::Model<Type>::getInstance();
 
-    if(mode=="debug") see(mode);
+  /** update the model parameter values using the values from p */
+  //TODO: fill this in!
 
-    int ndims = dims.size(); //--number of model dimensions
-    REPORT(dims);
+  /** assign the gmacs objective function pointer to obj (or this?) */
+  model->p_objective_function = obj;
 
-    int npars = pars.size(); //--number of  model parameters
-    REPORT(npars);
+  Type objfun = model.evaluate();
 
-    Type objfun = 0;
-
-    return objfun;
+  return objfun;
 }
 
 

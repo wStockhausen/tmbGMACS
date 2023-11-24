@@ -1,4 +1,20 @@
-#--model population dynamics
+#--model integration and population dynamics
+################################################################################
+SEASONAL INTEGRATION--##########################################################
+##--values (fraction of year) for category "duration" must be defined for 
+##----each year and season and sum to 1 for each year
+##--values for other categories are effective multipliers on rates
+##
+time_block  category           s1    s2     s3      s4   #--assuming 4 seasons defined to integrate model
+all        duration          0.7    0.0    0.3     0.0
+all        recruitment       0.0    0.0    0.0     1.0
+all        natural_mortality 1.0    1.0    1.0     1.0
+all        growth            0.0    1.0    0.0     0.0
+#--all        selectivity       <-seasonal evaluation not defined for selectivity
+#--all        fishing_mortality <-seasonal evaluation defined by individual fishery fleet data
+#--all        survey            <-seasonal evaluation defined by individual survey fleet data
+END TABLE
+END SEASONAL INTEGRATION
 ################################################################################
 INITIAL ABUNDANCE--##########################################################
 ##--options

@@ -24,6 +24,8 @@ writeCTL<-function(lst,conn,justText=TRUE){
           "#--model population dynamics",
           "################################################################################"
           );
+  str = c(str,writeCTL_SeasonalIntegration(lst[["SeasonalIntegration"]],conn,justText=TRUE));
+  str = c(str,"################################################################################");
   str = c(str,writeCTL_InitialAbundance(lst[["InitAbd"]],conn,justText=TRUE));
   str = c(str,"################################################################################");
   str = c(str,writeCTL_Allometry(lst[["allom"]],conn,justText=TRUE));
@@ -43,6 +45,23 @@ writeCTL<-function(lst,conn,justText=TRUE){
   str = c(str,writeCTL_SurveyIndices(lst[["srv"]],conn,justText=TRUE));
 
   str = c(str,"END CTL FILE");
+  if (!justText) cat(str,sep="\n",file=conn);
+  return(paste(str,collapse="\n"));
+}
+
+writeCTL_SeasonalIntegration<-function(lst,conn,justText=TRUE){
+  if (!justText)
+    if(!isOpen(conn)) conn = file(conn,open="w");
+
+  str = c("SEASONAL INTEGRATION--##########################################################",
+          "##--values (fraction of year) for category 'duration' must be defined for",
+          "##----each year and season and sum to 1 for each year",
+          "##--values for other categories are effective multipliers on rates",
+          "##----process do not occur in a season if the corresponding value is 0",
+          writeCTL_Table(lst[["seasonal_integration"]])
+          );
+  str = c(str,"END SEASONAL INTEGRATION SECTION","\n");
+
   if (!justText) cat(str,sep="\n",file=conn);
   return(paste(str,collapse="\n"));
 }

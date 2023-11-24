@@ -1,7 +1,7 @@
 Package: tmbGMACS
 Type: Package
 Title: A generalized stock assessment modeling framework for crustacean fishery stocks
-Version: 2023.11.13
+Version: 2023.11.20
 Author: William T. Stockhausen
 Maintainer: William T. Stockhausen <william.stockhausen@noaa.gov>
 Description: TMB implementation of the GMACS stock assessment model.
@@ -17,8 +17,10 @@ Imports:
     stringr,
     tibble,
     tools,
+    Rcpp,
     TMB (>= 1.9.6)
 LinkingTo: 
+    Rcpp,
     TMB
 VignetteBuilder: knitr, rmarkdown, tmbGMACS
 RoxygenNote: 7.2.3

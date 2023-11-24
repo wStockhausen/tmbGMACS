@@ -10,16 +10,24 @@ template<class Type>
 Type gmacs(objective_function<Type>* obj) {
   PARAMETER_VECTOR(p);
 
-  std::shared_ptr<gmacs::Model<Type>> model = gmacs::Model<Type>::getInstance();
+  /** get model framework */
+  std::shared_ptr<gmacs::ModelFW<Type>> modelFW = gmacs::ModelFW<Type>::getInstance();
 
   /** update the model parameter values using the values from p */
   //TODO: fill this in!
+  modelFW.updateParameters(p);
 
   /** assign the gmacs objective function pointer to obj (or this?) */
-  model->p_objective_function = obj;
+  modelFW->p_objective_function = obj;
 
-  Type objfun = model.evaluate();
+  /** evaluate the model objective function to characterize the fit to data */
+  Type objfun = modelFW.evaluate();
 
+  /** TODO: simulate model? */
+  /** TODO: report model results */
+  /** TODO: ADreport model results? */
+
+  /** return the objective function to the function caller */
   return objfun;
 }
 

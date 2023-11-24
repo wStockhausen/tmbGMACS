@@ -53,6 +53,10 @@ readCTL<-function(fn){
   while(ln!="END CTL FILE"){
     if (stringr::str_starts(ln,"[:blank:]*#")){
       #--skip line
+    } else if (stringr::str_starts(ln,"[:blank:]*SEASONAL INTEGRATION")){
+        res = readCTL_SeasonalIntegration(con,nl);
+        nl = res$nl;
+        lst[["SeasonalIntegration"]] = res$lst;
     } else if (stringr::str_starts(ln,"[:blank:]*INITIAL ABUNDANCE")){
         res = readCTL_InitialAbundance(con,nl);
         nl = res$nl;
@@ -96,6 +100,26 @@ readCTL<-function(fn){
   cat("CTL file: reached END CTL FILE at line",nl,"\n");
   close(con);
   return(lst);
+}
+
+readCTL_SeasonalIntegration<-function(con,nl){
+  type = "SEASONAL INTEGRATION";
+  cat("reading",type,"section starting on line",nl,"\n");
+  lst = list();
+  #--read seasonal integration section
+    #--read R0 parameter specification
+    res = readParamsTable(con,nl);
+    nl = res$nl;
+    lst[["seasonal_integration"]] = res$tbl;
+    rm(res);
+  #--read remainder
+  ln=readLines(con,n=1); nl=nl+1;
+  while(isOpen(con)&(!stringr::str_starts(ln,paste0("[:blank:]*END ",type)))){
+    cat("\t",nl,":\t",ln,"\n");
+    ln=readLines(con,n=1); nl=nl+1;
+  }#--while
+  cat(type,"section ended on line",nl,"\n");
+  return(list(nl=nl,lst=lst));
 }
 
 readCTL_InitialAbundance<-function(con,nl){

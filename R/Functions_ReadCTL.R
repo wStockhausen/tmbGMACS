@@ -433,5 +433,5 @@ readCTL_SurveyIndices<-function(con,nl){
   return(list(nl=nl,lst=lst));
 }
 
-tst = readCTL("test_ctl.txt");
+#tst = readCTL("test_ctl.txt");
 

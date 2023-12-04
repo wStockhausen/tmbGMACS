@@ -27,3 +27,28 @@
                         aspell = tools::vignetteEngine("knitr::rmarkdown")$aspell
                         )
 }
+
+#'
+#' @title Convert a tibble row to a string
+#'
+#' @description Function to convert a tibble row to a string.
+#'
+#' @param tbl_rw - a row of a tibble
+#'
+#' @reeturn a string
+#'
+#' @export
+#'
+tibbleRowToString<-function(tbl_rw){
+  str = "";
+  for (cn in rev(names(tbl_rw))){
+    if (is.factor(tbl_rw[[cn]])){
+      str = paste0(as.character(tbl_rw[[cn]])," ",str);
+    } else {
+      str = paste0(as.character(tbl_rw[[cn]])," ",str);
+    }
+  }
+  return(str)
+}
+
+tibbleRowToString(tbl_rw)

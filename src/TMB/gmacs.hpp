@@ -3,25 +3,25 @@
 #undef TMB_OBJECTIVE_PTR
 #define TMB_OBJECTIVE_PTR obj
 
-#include "../../include/Model.hpp"
+#include "../../include/ModelFW.hpp"
 
 // name of function _must_ match file name (gmacs)
 template<class Type>
 Type gmacs(objective_function<Type>* obj) {
   PARAMETER_VECTOR(p);
 
-  /** get model framework */
+  /** get pointer to model framework */
   std::shared_ptr<gmacs::ModelFW<Type>> modelFW = gmacs::ModelFW<Type>::getInstance();
 
   /** update the model parameter values using the values from p */
   //TODO: fill this in!
-  modelFW.updateParameters(p);
+  modelFW->updateParameters(p);
 
   /** assign the gmacs objective function pointer to obj (or this?) */
   modelFW->p_objective_function = obj;
 
   /** evaluate the model objective function to characterize the fit to data */
-  Type objfun = modelFW.evaluate();
+  Type objfun = modelFW->evaluate();
 
   /** TODO: simulate model? */
   /** TODO: report model results */

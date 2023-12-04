@@ -40,6 +40,7 @@ namespace gmacs{
       /** pointer to TMB objective function */
       ::objective_function<Type> *p_objective_function;
 #endif
+      ParameterFunctions* p_params;
 
     /**
      * Returns a single Information object for type Type.
@@ -48,7 +49,7 @@ namespace gmacs{
      */
     static std::shared_ptr<ModelFW<Type> > get_instance() {
       if (ModelFW<Type>::p_gmacs_modelFW == nullptr) {
-        ModelFW<Type>::p_gmacs_modelFW = std::make_shared<gmacs::ModelFW<Type>>();
+        ModelFW<Type>::p_gmacs_modelFW = std::make_shared<gmacs::ModelFW<Type> >();
       }
       return ModelFW<Type>::p_gmacs_modelFW;
     }
@@ -57,6 +58,7 @@ namespace gmacs{
      * Constructor.
      */
     ModelFW<Type>(){
+      p_params = nullptr;
 #ifdef TMB_MODEL
       p_objective_function = nullptr;
 #endif

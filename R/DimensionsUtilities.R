@@ -13,14 +13,14 @@ createDimsFactors<-function(dfr){
     dmnms = attr(dfr,"dmnms");
     dmlvs = attr(dfr,"dmlvs");
     for (dmnm in dmnms){
-        if (is.factor(dfr[[dmnm]]))
+        if (!is.factor(dfr[[dmnm]]))
             dfr[[dmnm]] = factor(dfr[[dmnm]],levels=dmlvs[[dmnm]]);
     }
     return(dfr);
 }
 
-# dfrp = createDimFactors(dfrSparse); str(dfrp);
-# dfrp = createDimFactors(dfrp);      str(dfrp);
+# dfrp = createDimsFactors(dfrSparse); str(dfrp);
+# dfrp = createDimsFactors(dfrp);      str(dfrp);
 
 #'
 #' @title Drop selected dimensions from a dimensions map
@@ -62,9 +62,11 @@ keepDims<-function(dms,keep){
     if (is.numeric(keep)){
       keep = dmnms[keep];
     }
-    kept = dms |> dplyr::select(dplyr::all_of(c("i",keep))) |>
+    c1 = names(dms)[1];
+    kept = dms |> dplyr::select(dplyr::all_of(c(c1,keep))) |>
                   dplyr::distinct(dplyr::pick(dplyr::all_of(keep))) |>
-                  dplyr::mutate(i=dplyr::row_number(),.before=1)
+                  dplyr::mutate(i=dplyr::row_number(),.before=1);
+    names(kept)[1] = c1;
     attr(kept,"dmnms")<-keep;
     attr(kept,"dmlvs")<-dmlvs[keep];
     attr(kept,"dmlns")<-dmlns[keep];
@@ -80,9 +82,8 @@ keepDims<-function(dms,keep){
 #' @param keepOrigDims - flag (T/F) to keep original dimensions (T) or aggregated dimensions (F)
 #'
 #' @return map from original dimensions to aggregated dimensions.
-#'    * column "j" gives index into vector with aggregated dimensions
-#'    * column "i" gives index into vector with original dimensions
-#'
+#'    * column "idx_to" gives index into vector with aggregated dimensions
+#'    * column "idx_from" gives index into vector with original dimensions
 #'
 #' @import  dplyr
 #'
@@ -91,11 +92,13 @@ keepDims<-function(dms,keep){
 createAggregatorMap<-function(dms_frm,dms_to,keepOrigDims=FALSE){
     nms_fr = attr(dms_frm,"dmnms");
     nms_to = attr(dms_to, "dmnms");
+    names(nms_fr)[1] = "idx_from";
+    names(nms_to)[1] = "idx_to";
     agg = dms_frm |> dplyr::inner_join(dms_to,by=nms_to);
     if (keepOrigDims){
-      agg = agg |> dplyr::relocate(j=i.y,i=i.x,.before=1);
+      agg = agg |> dplyr::relocate(idx_to,i=idx_from,.before=1);
     } else {
-      agg = agg |> dplyr::select(j=i.y,i=i.x,dplyr::all_of(nms_to));
+      agg = agg |> dplyr::select(idx_to,idx_from,dplyr::all_of(nms_to));
     }
     return(agg);
 }

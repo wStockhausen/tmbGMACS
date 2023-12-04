@@ -1,15 +1,17 @@
 #--model integration and population dynamics
 ################################################################################
 SEASONAL INTEGRATION--##########################################################
-##--values (fraction of year) for category "duration" must be defined for 
+##--values (fraction of year) for category "duration" must be defined for
 ##----each year and season and sum to 1 for each year
-##--values for other categories are effective multipliers on rates
 ##
-time_block  category           s1    s2     s3      s4   #--assuming 4 seasons defined to integrate model
-all        duration          0.7    0.0    0.3     0.0
-all        recruitment       0.0    0.0    0.0     1.0
-all        natural_mortality 1.0    1.0    1.0     1.0
-all        growth            0.0    1.0    0.0     0.0
+#              duration (fraction of year)
+id  time_block  s1    s2     s3      s4   #--assuming 4 seasons defined to integrate model
+ 1     all     0.7   0.0    0.3     0.0
+
+##--TODO: move to process definition
+#--all        recruitment       0.0    0.0    0.0     1.0
+#--all        natural_mortality 1.0    1.0    1.0     1.0
+#--all        growth            0.0    1.0    0.0     0.0
 #--all        selectivity       <-seasonal evaluation not defined for selectivity
 #--all        fishing_mortality <-seasonal evaluation defined by individual fishery fleet data
 #--all        survey            <-seasonal evaluation defined by individual survey fleet data
@@ -27,26 +29,26 @@ INITIAL ABUNDANCE--##########################################################
 ###--Option 1: no parameters
 ###--Option 2: parameters (R0)
 ###-------------------------------------------------------------------------------------
-   id     x   scale    units  ival    lb      ub     phz   pr_type  p1    p2  label
-    1    all   ar    millions 100     50     150      1      LN     100    20   R0
-    END TABLE
+   id     x   scale    units   ival    lb      ub     phz   pr_type  p1    p2  label
+    1    all  arith   millions 100     50     150      1      LN     100    20   R0
+END TABLE
 ###-------------------------------------------------------------------------------------
 ###--Option 3: parameters (Rini)
 ###-------------------------------------------------------------------------------------
 #   id     x   scale    units  ival    lb      ub     phz  pr_type    p1    p2  label
-#    1    all   ar    millions 100     50     150      1      LN     100    20  Rini
+#    1    all arith    millions 100     50     150      1      LN     100    20  Rini
 # END TABLE
 ###-------------------------------------------------------------------------------------
 ###--Option 4: free parameters
 ####--reference classes
 ###-------------------------------------------------------------------------------------
 #  id     x       m       s        z     scale    units  ival    lb      ub     phz  pr_type    p1    p2
-#    1    male immature new_shell  92.5     ar  millions  100     50     150      1      LN     100    20
-#    2    male   mature new_shell  92.5     ar  millions  100     50     150      1      LN     100    20
-#    3    male   mature old_shell  92.5     ar  millions  100     50     150      1      LN     100    20
-#    4  female immature new_shell  92.5     ar  millions  100     50     150      1      LN     100    20
-#    5  female   mature new_shell  92.5     ar  millions  100     50     150      1      LN     100    20
-#    6  female   mature old_shell  92.5     ar  millions  100     50     150      1      LN     100    20
+#    1    male immature new_shell  92.5  arith  millions  100     50     150      1      LN     100    20
+#    2    male   mature new_shell  92.5  arith  millions  100     50     150      1      LN     100    20
+#    3    male   mature old_shell  92.5  arith  millions  100     50     150      1      LN     100    20
+#    4  female immature new_shell  92.5  arith  millions  100     50     150      1      LN     100    20
+#    5  female   mature new_shell  92.5  arith  millions  100     50     150      1      LN     100    20
+#    6  female   mature old_shell  92.5  arith  millions  100     50     150      1      LN     100    20
 # END TABLE
 ###------------------------------------------------------------------------------
 ###--nonparametric initial abundance offset options
@@ -58,102 +60,102 @@ INITIAL ABUNDANCE--##########################################################
 ###--initial abundance offsets
 ##------------------------------------------------------------------------------
 #	id	ref_id	x	m	s	z	scale	units	ival	lb	ub	phz	type	p1	p2
-#	1	1	male	immature	new_shell	27.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	2	1	male	immature	new_shell	32.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	3	1	male	immature	new_shell	37.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	4	1	male	immature	new_shell	42.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	5	1	male	immature	new_shell	47.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	6	1	male	immature	new_shell	52.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	7	1	male	immature	new_shell	57.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	8	1	male	immature	new_shell	62.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	9	1	male	immature	new_shell	67.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	10	1	male	immature	new_shell	72.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	11	1	male	immature	new_shell	77.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	12	1	male	immature	new_shell	82.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	13	1	male	immature	new_shell	87.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	14	1	male	immature	new_shell	92.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	15	1	male	immature	new_shell	97.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	16	1	male	immature	new_shell	102.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	17	2	male	mature	new_shell	27.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	18	2	male	mature	new_shell	32.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	19	2	male	mature	new_shell	37.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	20	2	male	mature	new_shell	42.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	21	2	male	mature	new_shell	47.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	22	2	male	mature	new_shell	52.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	23	2	male	mature	new_shell	57.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	24	2	male	mature	new_shell	62.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	25	2	male	mature	new_shell	67.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	26	2	male	mature	new_shell	72.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	27	2	male	mature	new_shell	77.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	28	2	male	mature	new_shell	82.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	29	2	male	mature	new_shell	87.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	30	2	male	mature	new_shell	92.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	31	2	male	mature	new_shell	97.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	32	2	male	mature	new_shell	102.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	33	3	male	mature	old_shell	27.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	34	3	male	mature	old_shell	32.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	35	3	male	mature	old_shell	37.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	36	3	male	mature	old_shell	42.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	37	3	male	mature	old_shell	47.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	38	3	male	mature	old_shell	52.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	39	3	male	mature	old_shell	57.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	40	3	male	mature	old_shell	62.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	41	3	male	mature	old_shell	67.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	42	3	male	mature	old_shell	72.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	43	3	male	mature	old_shell	77.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	44	3	male	mature	old_shell	82.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	45	3	male	mature	old_shell	87.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	46	3	male	mature	old_shell	92.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	47	3	male	mature	old_shell	97.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	48	3	male	mature	old_shell	102.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	49	4	female	immature	new_shell	27.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	50	4	female	immature	new_shell	32.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	51	4	female	immature	new_shell	37.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	52	4	female	immature	new_shell	42.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	53	4	female	immature	new_shell	47.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	54	4	female	immature	new_shell	52.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	55	4	female	immature	new_shell	57.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	56	4	female	immature	new_shell	62.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	57	4	female	immature	new_shell	67.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	58	4	female	immature	new_shell	72.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	59	4	female	immature	new_shell	77.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	60	4	female	immature	new_shell	82.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	61	4	female	immature	new_shell	87.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	62	4	female	immature	new_shell	92.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	63	4	female	immature	new_shell	97.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	64	4	female	immature	new_shell	102.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	65	5	female	mature	new_shell	27.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	66	5	female	mature	new_shell	32.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	67	5	female	mature	new_shell	37.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	68	5	female	mature	new_shell	42.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	69	5	female	mature	new_shell	47.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	70	5	female	mature	new_shell	52.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	71	5	female	mature	new_shell	57.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	72	5	female	mature	new_shell	62.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	73	5	female	mature	new_shell	67.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	74	5	female	mature	new_shell	72.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	75	5	female	mature	new_shell	77.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	76	5	female	mature	new_shell	82.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	77	5	female	mature	new_shell	87.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	78	5	female	mature	new_shell	92.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	79	5	female	mature	new_shell	97.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	80	5	female	mature	new_shell	102.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	81	6	female	mature	old_shell	27.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	82	6	female	mature	old_shell	32.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	83	6	female	mature	old_shell	37.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	84	6	female	mature	old_shell	42.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	85	6	female	mature	old_shell	47.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	86	6	female	mature	old_shell	52.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	87	6	female	mature	old_shell	57.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	88	6	female	mature	old_shell	62.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	89	6	female	mature	old_shell	67.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	90	6	female	mature	old_shell	72.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	91	6	female	mature	old_shell	77.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	92	6	female	mature	old_shell	82.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	93	6	female	mature	old_shell	87.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	94	6	female	mature	old_shell	92.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	95	6	female	mature	old_shell	97.5	ar	millions	10	0.0001	1000	1	none	0	0
-#	96	6	female	mature	old_shell	102.5	ar	millions	10	0.0001	1000	1	none	0	0
+#	1	1	male	immature	new_shell	27.5arith millions	10	0.0001	1000	1	none	0	0
+#	2	1	male	immature	new_shell	32.5arith millions	10	0.0001	1000	1	none	0	0
+#	3	1	male	immature	new_shell	37.5arith millions	10	0.0001	1000	1	none	0	0
+#	4	1	male	immature	new_shell	42.5arith millions	10	0.0001	1000	1	none	0	0
+#	5	1	male	immature	new_shell	47.5arith millions	10	0.0001	1000	1	none	0	0
+#	6	1	male	immature	new_shell	52.5arith millions	10	0.0001	1000	1	none	0	0
+#	7	1	male	immature	new_shell	57.5arith millions	10	0.0001	1000	1	none	0	0
+#	8	1	male	immature	new_shell	62.5arith millions	10	0.0001	1000	1	none	0	0
+#	9	1	male	immature	new_shell	67.5arith millions	10	0.0001	1000	1	none	0	0
+#	10	1	male	immature	new_shell	72.5arith millions	10	0.0001	1000	1	none	0	0
+#	11	1	male	immature	new_shell	77.5arith millions	10	0.0001	1000	1	none	0	0
+#	12	1	male	immature	new_shell	82.5arith millions	10	0.0001	1000	1	none	0	0
+#	13	1	male	immature	new_shell	87.5arith millions	10	0.0001	1000	1	none	0	0
+#	14	1	male	immature	new_shell	92.5arith millions	10	0.0001	1000	1	none	0	0
+#	15	1	male	immature	new_shell	97.5arith millions	10	0.0001	1000	1	none	0	0
+#	16	1	male	immature	new_shell	102.5arith millions	10	0.0001	1000	1	none	0	0
+#	17	2	male	mature	new_shell	27.5arith millions	10	0.0001	1000	1	none	0	0
+#	18	2	male	mature	new_shell	32.5arith millions	10	0.0001	1000	1	none	0	0
+#	19	2	male	mature	new_shell	37.5arith millions	10	0.0001	1000	1	none	0	0
+#	20	2	male	mature	new_shell	42.5arith millions	10	0.0001	1000	1	none	0	0
+#	21	2	male	mature	new_shell	47.5arith millions	10	0.0001	1000	1	none	0	0
+#	22	2	male	mature	new_shell	52.5arith millions	10	0.0001	1000	1	none	0	0
+#	23	2	male	mature	new_shell	57.5arith millions	10	0.0001	1000	1	none	0	0
+#	24	2	male	mature	new_shell	62.5arith millions	10	0.0001	1000	1	none	0	0
+#	25	2	male	mature	new_shell	67.5arith millions	10	0.0001	1000	1	none	0	0
+#	26	2	male	mature	new_shell	72.5arith millions	10	0.0001	1000	1	none	0	0
+#	27	2	male	mature	new_shell	77.5arith millions	10	0.0001	1000	1	none	0	0
+#	28	2	male	mature	new_shell	82.5arith millions	10	0.0001	1000	1	none	0	0
+#	29	2	male	mature	new_shell	87.5arith millions	10	0.0001	1000	1	none	0	0
+#	30	2	male	mature	new_shell	92.5arith millions	10	0.0001	1000	1	none	0	0
+#	31	2	male	mature	new_shell	97.5arith millions	10	0.0001	1000	1	none	0	0
+#	32	2	male	mature	new_shell	102.5arith millions	10	0.0001	1000	1	none	0	0
+#	33	3	male	mature	old_shell	27.5arith millions	10	0.0001	1000	1	none	0	0
+#	34	3	male	mature	old_shell	32.5arith millions	10	0.0001	1000	1	none	0	0
+#	35	3	male	mature	old_shell	37.5arith millions	10	0.0001	1000	1	none	0	0
+#	36	3	male	mature	old_shell	42.5arith millions	10	0.0001	1000	1	none	0	0
+#	37	3	male	mature	old_shell	47.5arith millions	10	0.0001	1000	1	none	0	0
+#	38	3	male	mature	old_shell	52.5arith millions	10	0.0001	1000	1	none	0	0
+#	39	3	male	mature	old_shell	57.5arith millions	10	0.0001	1000	1	none	0	0
+#	40	3	male	mature	old_shell	62.5arith millions	10	0.0001	1000	1	none	0	0
+#	41	3	male	mature	old_shell	67.5arith millions	10	0.0001	1000	1	none	0	0
+#	42	3	male	mature	old_shell	72.5arith millions	10	0.0001	1000	1	none	0	0
+#	43	3	male	mature	old_shell	77.5arith millions	10	0.0001	1000	1	none	0	0
+#	44	3	male	mature	old_shell	82.5arith millions	10	0.0001	1000	1	none	0	0
+#	45	3	male	mature	old_shell	87.5arith millions	10	0.0001	1000	1	none	0	0
+#	46	3	male	mature	old_shell	92.5arith millions	10	0.0001	1000	1	none	0	0
+#	47	3	male	mature	old_shell	97.5arith millions	10	0.0001	1000	1	none	0	0
+#	48	3	male	mature	old_shell	102.5arith millions	10	0.0001	1000	1	none	0	0
+#	49	4	female	immature	new_shell	27.5arith millions	10	0.0001	1000	1	none	0	0
+#	50	4	female	immature	new_shell	32.5arith millions	10	0.0001	1000	1	none	0	0
+#	51	4	female	immature	new_shell	37.5arith millions	10	0.0001	1000	1	none	0	0
+#	52	4	female	immature	new_shell	42.5arith millions	10	0.0001	1000	1	none	0	0
+#	53	4	female	immature	new_shell	47.5arith millions	10	0.0001	1000	1	none	0	0
+#	54	4	female	immature	new_shell	52.5arith millions	10	0.0001	1000	1	none	0	0
+#	55	4	female	immature	new_shell	57.5arith millions	10	0.0001	1000	1	none	0	0
+#	56	4	female	immature	new_shell	62.5arith millions	10	0.0001	1000	1	none	0	0
+#	57	4	female	immature	new_shell	67.5arith millions	10	0.0001	1000	1	none	0	0
+#	58	4	female	immature	new_shell	72.5arith millions	10	0.0001	1000	1	none	0	0
+#	59	4	female	immature	new_shell	77.5arith millions	10	0.0001	1000	1	none	0	0
+#	60	4	female	immature	new_shell	82.5arith millions	10	0.0001	1000	1	none	0	0
+#	61	4	female	immature	new_shell	87.5arith millions	10	0.0001	1000	1	none	0	0
+#	62	4	female	immature	new_shell	92.5arith millions	10	0.0001	1000	1	none	0	0
+#	63	4	female	immature	new_shell	97.5arith millions	10	0.0001	1000	1	none	0	0
+#	64	4	female	immature	new_shell	102.5arith millions	10	0.0001	1000	1	none	0	0
+#	65	5	female	mature	new_shell	27.5arith millions	10	0.0001	1000	1	none	0	0
+#	66	5	female	mature	new_shell	32.5arith millions	10	0.0001	1000	1	none	0	0
+#	67	5	female	mature	new_shell	37.5arith millions	10	0.0001	1000	1	none	0	0
+#	68	5	female	mature	new_shell	42.5arith millions	10	0.0001	1000	1	none	0	0
+#	69	5	female	mature	new_shell	47.5arith millions	10	0.0001	1000	1	none	0	0
+#	70	5	female	mature	new_shell	52.5arith millions	10	0.0001	1000	1	none	0	0
+#	71	5	female	mature	new_shell	57.5arith millions	10	0.0001	1000	1	none	0	0
+#	72	5	female	mature	new_shell	62.5arith millions	10	0.0001	1000	1	none	0	0
+#	73	5	female	mature	new_shell	67.5arith millions	10	0.0001	1000	1	none	0	0
+#	74	5	female	mature	new_shell	72.5arith millions	10	0.0001	1000	1	none	0	0
+#	75	5	female	mature	new_shell	77.5arith millions	10	0.0001	1000	1	none	0	0
+#	76	5	female	mature	new_shell	82.5arith millions	10	0.0001	1000	1	none	0	0
+#	77	5	female	mature	new_shell	87.5arith millions	10	0.0001	1000	1	none	0	0
+#	78	5	female	mature	new_shell	92.5arith millions	10	0.0001	1000	1	none	0	0
+#	79	5	female	mature	new_shell	97.5arith millions	10	0.0001	1000	1	none	0	0
+#	80	5	female	mature	new_shell	102.5arith millions	10	0.0001	1000	1	none	0	0
+#	81	6	female	mature	old_shell	27.5arith millions	10	0.0001	1000	1	none	0	0
+#	82	6	female	mature	old_shell	32.5arith millions	10	0.0001	1000	1	none	0	0
+#	83	6	female	mature	old_shell	37.5arith millions	10	0.0001	1000	1	none	0	0
+#	84	6	female	mature	old_shell	42.5arith millions	10	0.0001	1000	1	none	0	0
+#	85	6	female	mature	old_shell	47.5arith millions	10	0.0001	1000	1	none	0	0
+#	86	6	female	mature	old_shell	52.5arith millions	10	0.0001	1000	1	none	0	0
+#	87	6	female	mature	old_shell	57.5arith millions	10	0.0001	1000	1	none	0	0
+#	88	6	female	mature	old_shell	62.5arith millions	10	0.0001	1000	1	none	0	0
+#	89	6	female	mature	old_shell	67.5arith millions	10	0.0001	1000	1	none	0	0
+#	90	6	female	mature	old_shell	72.5arith millions	10	0.0001	1000	1	none	0	0
+#	91	6	female	mature	old_shell	77.5arith millions	10	0.0001	1000	1	none	0	0
+#	92	6	female	mature	old_shell	82.5arith millions	10	0.0001	1000	1	none	0	0
+#	93	6	female	mature	old_shell	87.5arith millions	10	0.0001	1000	1	none	0	0
+#	94	6	female	mature	old_shell	92.5arith millions	10	0.0001	1000	1	none	0	0
+#	95	6	female	mature	old_shell	97.5arith millions	10	0.0001	1000	1	none	0	0
+#	96	6	female	mature	old_shell	102.5arith millions	10	0.0001	1000	1	none	0	0
 # END TABLE
 ##------------------------------------------------------------------------------
 END INITIAL ABUNDANCE SECTION
@@ -218,6 +220,18 @@ fcn_id  param  par_id  ref_time  size  scale  units  ival  lb  ub  phz  type  p1
 3  w_at_z  32  NA  182  arith  KG  1.569451989  0.784725995  2.354177984  -1  none  NA  NA  FALSE  FALSE  mature_females
 END TABLE
 ## ———————————————————————————————————————————————————————————————————————————————————— ##
+## ———————————————————————————————————————————————————————————————————————————————————— ##
+##--allometry offset parameters
+## ———————————————————————————————————————————————————————————————————————————————————— ##
+# par_id  off_id  time_block  param  scale  units    phz  off_type  RE    ival  pr_type  p1  p2  label
+# END TABLE
+## ———————————————————————————————————————————————————————————————————————————————————— ##
+##--allometry parameter covariates
+## ———————————————————————————————————————————————————————————————————————————————————— ##
+#  par_id  cov_id  covar  time_block  param  scale  units  phz  RE  ival  type  p1  p2  label
+#  END TABLE
+## ———————————————————————————————————————————————————————————————————————————————————— ##
+
 END ALLOMETRY SECTION
 
 ################################################################################
@@ -305,7 +319,7 @@ NATURAL MORTALITY--#############################################################
 ##------------------------------------------------------------------------------
   id  y          c     x       m       s  size_fcn label
   1   2001:2005  all  all   immature all  constant Mi
-  2   2001:2005  all  all    mature  all  constant Mm 
+  2   2001:2005  all  all    mature  all  constant Mm
   END TABLE
 ##------------------------------------------------------------------------------
 

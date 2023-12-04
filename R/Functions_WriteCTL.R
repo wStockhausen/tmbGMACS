@@ -56,8 +56,8 @@ writeCTL_SeasonalIntegration<-function(lst,conn,justText=TRUE){
   str = c("SEASONAL INTEGRATION--##########################################################",
           "##--values (fraction of year) for category 'duration' must be defined for",
           "##----each year and season and sum to 1 for each year",
-          "##--values for other categories are effective multipliers on rates",
-          "##----process do not occur in a season if the corresponding value is 0",
+          "##",
+          ,"#              duration (fraction of year)",
           writeCTL_Table(lst[["seasonal_integration"]])
           );
   str = c(str,"END SEASONAL INTEGRATION SECTION","\n");
@@ -248,4 +248,4 @@ writeCTL_SurveyIndices<-function(lst,conn,justText=TRUE){
 }
 
 #--for testing
-cat(writeCTL(tst,"",justText=TRUE),sep="\n");
+#cat(writeCTL(tst,"",justText=TRUE),sep="\n");

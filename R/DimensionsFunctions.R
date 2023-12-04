@@ -161,7 +161,9 @@ createSparseDimsMap<-function(...){
     attr(dfr,"dmnms") <-dmsn;#--dim names
     attr(dfr,"dmlvs") <-dmsl;#--dim levels
     attr(dfr,"dmlns") <-dmsi;#--dim lengths
-    dfr = dfr |> dplyr::mutate(i=dplyr::row_number(),.before=1);
+    dfr = dfr |> createDimsFactors() |>
+                 dplyr::arrange(dplyr::pick((tidyselect::everything())));
+    dfr = dfr |> dplyr::mutate(sparse_idx=dplyr::row_number(),.before=1);
     return(dfr);
 }
 
@@ -195,16 +197,6 @@ createSparseDimsMap<-function(...){
 #' @export
 #'
 createFullDimsMap<-function(map){
-    # dnms = names(map)[2:length(names(map))];
-    # dmsl = list();
-    # dmsn = vector("numeric",length(dnms));
-    # names(dmsn) = dnms;
-    # for (dnm in dnms){
-    #     dmsl[[dnm]] = levels(dfrAll[[dnm]]);
-    #     dmsn[dnm]   = length(dmsl[[dnm]]);
-    # }
-    # attr(dmsl,"dmnms") <-dnms;
-    # attr(dmsl,"dmlns") <-dnms;
     dmlvs = attr(map,"dmlvs");
     dfr = NULL;
     for (nm in names(dmlvs)) {
@@ -219,7 +211,9 @@ createFullDimsMap<-function(map){
     attr(dfr,"dmnms") <-attr(map,"dmnms");#--dim names
     attr(dfr,"dmlvs") <-dmlvs;            #--dim levels
     attr(dfr,"dmlns") <-attr(map,"dmlns");#--dim lengths
-    dfr = dfr |> dplyr::mutate(j=dplyr::row_number(),.before=1)
+    dfr = dfr |> createDimsFactors() |>
+                 dplyr::arrange(dplyr::pick((tidyselect::everything())));
+    dfr = dfr |> dplyr::mutate(dense_idx=dplyr::row_number(),.before=1)
     return(dfr);
 }
 
@@ -232,14 +226,14 @@ createFullDimsMap<-function(map){
 #'
 #' @return a list with elements
 #' \itemize{
-#' \item{dfrS2F - tibble with mapping from sparse to full (dense) index values}
-#' \item{dfrF2S - tibble with mapping from full (dense) to sparse index values}
+#' \item{dfrS2D - tibble with mapping from sparse to dense (full) index values}
+#' \item{dfrD2S - tibble with mapping from dense (full) to sparse index values}
 #' }
 #'
 #' @details Each name in
 #' \code{...} should be the name of the terminal dimension in the associated value (a
 #' possibly-nested dimension list or a vector of levels), as in [createSparseDimsMap()].
-#' In \code{dfrS2F}, the row index corresponds to the 1's-based sparse index value.
+#' In \code{dfrS2D}, the row index corresponds to the 1's-based sparse index value.
 #' In \code{dfrF2S}, the row index corresponds to the 1's-based full index value.
 #'
 #' @example inst/examples/example-createDimsMaps.R
@@ -250,16 +244,16 @@ createFullDimsMap<-function(map){
 #'
 createDimsMaps<-function(...){
     dfrSprs = createSparseDimsMap(...);
-    dfrFull = createFullDimsMap(dfrSprs);
+    dfrDens = createFullDimsMap(dfrSprs);
     dmnms   = attr(dfrSprs,"dmnms");
-    dfrS2F  = dfrSprs |> dplyr::inner_join(dfrFull,by=dmnms) |>
+    dfrS2D  = dfrSprs |> dplyr::inner_join(dfrDens,by=dmnms) |>
                 dplyr::select(-1) |>
-                dplyr::rename(idx=j) |>
-                createDimFactors();
-    dfrF2S  = dfrFull |> dplyr::full_join(dfrSprs,by=dmnms) |>
-                dplyr::mutate(i=ifelse(is.na(i),-1,i)) |>
+                dplyr::select(dense_idx,!dplyr::last_col());# |>
+                #createDimsFactors();
+    dfrD2S  = dfrDens |> dplyr::full_join(dfrSprs,by=dmnms) |>
+                dplyr::mutate(sparse_idx=ifelse(is.na(sparse_idx),-1,sparse_idx)) |>
                 dplyr::select(-1) |>
-                dplyr::rename(idx=i) |>
-                createDimFactors();
-    return(list(dfrS2F=dfrS2F,dfrF2S=dfrF2S));
+                dplyr::select(sparse_idx,!dplyr::last_col());# |>
+                #createDimsFactors();
+    return(list(dfrS2D=dfrS2D,dfrD2S=dfrD2S));
 }

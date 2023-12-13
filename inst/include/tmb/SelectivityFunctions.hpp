@@ -23,8 +23,8 @@
 #ifndef GMACS_TMB_SELECTIVITYFUNCTIONS_HPP
 #define GMACS_TMB_SELECTIVITYFUNCTIONS_HPP
 
-#include "../tmbGMACS_types.hpp"
-#include "../gmacs_utils.hpp"
+#include "../tmbGMACS_traits.hpp"
+#include "../tmbGMACS_utils.hpp"
 #include <tmbutils/splines.hpp>
 
 namespace gmacs{

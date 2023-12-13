@@ -35,7 +35,7 @@
 #'
 #' @param tbl_rw - a row of a tibble
 #'
-#' @reeturn a string
+#' @return a string
 #'
 #' @export
 #'
@@ -51,4 +51,4 @@ tibbleRowToString<-function(tbl_rw){
   return(str)
 }
 
-tibbleRowToString(tbl_rw)
+#--tibbleRowToString(tbl_rw)

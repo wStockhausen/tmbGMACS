@@ -23,7 +23,7 @@
 #ifndef GMACS_TMB_NATURALMORTALITYFUNCTIONS_HPP
 #define GMACS_TMB_NATURALMORTALITYFUNCTIONS_HPP
 
-#include "../tmbGMACS_types.hpp"
+#include "../tmbGMACS_traits.hpp"
 
 namespace gmacs{
 /**

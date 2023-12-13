@@ -15,8 +15,8 @@ createAggregatorMap(dms_frm, dms_to, keepOrigDims = FALSE)
 }
 \value{
 map from original dimensions to aggregated dimensions.
-   * column "j" gives index into vector with aggregated dimensions
-   * column "i" gives index into vector with original dimensions
+   * column "idx_to" gives index into vector with aggregated dimensions
+   * column "idx_from" gives index into vector with original dimensions
 }
 \description{
 Function to create an aggregator map from one set of dimensions to another.

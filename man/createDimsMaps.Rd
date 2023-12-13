@@ -12,8 +12,8 @@ createDimsMaps(...)
 \value{
 a list with elements
 \itemize{
-\item{dfrS2F - tibble with mapping from sparse to full (dense) index values}
-\item{dfrF2S - tibble with mapping from full (dense) to sparse index values}
+\item{dfrS2D - tibble with mapping from sparse to dense (full) index values}
+\item{dfrD2S - tibble with mapping from dense (full) to sparse index values}
 }
 }
 \description{
@@ -23,7 +23,7 @@ Function to create maps between sparse and dense dimension indices.
 Each name in
 \code{...} should be the name of the terminal dimension in the associated value (a
 possibly-nested dimension list or a vector of levels), as in [createSparseDimsMap()].
-In \code{dfrS2F}, the row index corresponds to the 1's-based sparse index value.
+In \code{dfrS2D}, the row index corresponds to the 1's-based sparse index value.
 In \code{dfrF2S}, the row index corresponds to the 1's-based full index value.
 }
 \examples{

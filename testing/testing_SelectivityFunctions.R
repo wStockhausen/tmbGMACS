@@ -1,18 +1,20 @@
 #--script to test Selectivity functions
 #----see inst/include/tmb/SelectivityFunctions.hpp
 #
-require(ggplot2);
-#
 #--Set working directory to "testing" folder
 setwd("./testing");
+
+#--require ggplot2 for graphs
+require(ggplot2);
+
 #--compile and test SelectivityFunctions.hpp as a module "selfcns_module"
 require(Rcpp)
-require(RcppEigen)
+#require(RcppEigen)
 require(TMB)
-sourceCpp(file="SelectivityFunctions.cpp",
-          embeddedR=FALSE,rebuild=TRUE,
-          showOutput=TRUE,verbose=TRUE,
-          dryRun=FALSE)
+cpp = sourceCpp(file="SelectivityFunctions.cpp",
+                embeddedR=FALSE,rebuild=TRUE,
+                showOutput=TRUE,verbose=TRUE,
+                dryRun=FALSE,cacheDir=".")
 
 #--test window
 #----size bin centers

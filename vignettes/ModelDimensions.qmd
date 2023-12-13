@@ -93,7 +93,7 @@ In the above example, the size (number of rows) of the resulting dense dimension
 
 The *Dimensions* class defines dimensions on the C++ side and combines information from the sparse and and corresponding dense dimensions maps to allow quick one-dimensional indexing across the combined levels of the dimensions.
 
-```{r}
+```{r, eval=FALSE}
 #--TODO: fill this in
 #>--create mapping between the sparse and dense dimensions maps
 lst = createDimsMaps(y=vYs,s=vSs,x=vXs,z=vZs);
@@ -136,7 +136,7 @@ cat(idxs,idxd,res2,"\n");
 
 Data fit in gmacs typically represent quantities aggregated over some combination of population categories, so it is necessary to determine the mappping from model indices to data indices. The function **createAggregatorMap*** provides the required mapping of 1-d indices from one dimensions map to another, as illustrated in the following example (@tbl-Ex2) using the dimensions map `dms` from the previous example:
 
-```{r ex2}
+```{r ex2, eval=FALSE}
 #> Example of how to create an aggregator map using "dms" from above
 #> to aggregate by year (y) and sex (x) over season (s) and size (z). 
 #>    Create dimensions map with only y and x
@@ -146,10 +146,10 @@ Data fit in gmacs typically represent quantities aggregated over some combinatio
 ```
 
 *j* is the vector index for `aggDims`, *i* is the vector index for `dms`.
-```{r}
+```{r, eval=FALSE}
 #| label: tbl-Ex2
 #| tbl-cap: Example aggregator map (from indices i to indices j).
-#| eval: !expr 'require(kableExtra)'
+##| eval: !expr 'require(kableExtra)'
 #| echo: false
 aggMap |> kableExtra::kbl(booktabs=TRUE,longtable=TRUE);
 ```

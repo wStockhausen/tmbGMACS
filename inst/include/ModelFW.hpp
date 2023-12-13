@@ -25,6 +25,13 @@
 
 #include <memory>
 
+#ifndef TMB_HPP_DEFINED
+  #include <TMB.hpp>
+  #define TMB_HPP_DEFINED
+#endif //--TMB_HPP_DEFINED
+
+//#include "tmbGMACS_traits.hpp"
+
 namespace gmacs{
 /**
  * ModelFW: GMACS model framework class
@@ -33,21 +40,21 @@ namespace gmacs{
   class ModelFW{
     public:
       /** Pointer to singleton instance of the gmacs model framework.
-       * Access this instance using gmacs::ModelFW<Type>::get_instance();
+       * Access this instance using gmacs::ModelFW<Type>::getInstance();
       */
-      static gmacs::ModelFW<Type> p_gmacs_modelFW;
+      static std::shared_ptr<gmacs::ModelFW<Type> > p_gmacs_modelFW;
 #ifdef TMB_MODEL
       /** pointer to TMB objective function */
-      ::objective_function<Type> *p_objective_function;
+      ::objective_function<Type>* p_objective_function;
 #endif
-      ParameterFunctions* p_params;
+      //ParameterFunctions* p_params;
 
     /**
      * Returns a single Information object for type Type.
      *
      * @return singleton for type Type
      */
-    static std::shared_ptr<ModelFW<Type> > get_instance() {
+    static std::shared_ptr<ModelFW<Type> > getInstance() {
       if (ModelFW<Type>::p_gmacs_modelFW == nullptr) {
         ModelFW<Type>::p_gmacs_modelFW = std::make_shared<gmacs::ModelFW<Type> >();
       }
@@ -58,11 +65,22 @@ namespace gmacs{
      * Constructor.
      */
     ModelFW<Type>(){
-      p_params = nullptr;
+      //p_params = nullptr;
 #ifdef TMB_MODEL
       p_objective_function = nullptr;
 #endif
     };
+
+    /**
+     * @brief updateParameters.
+     *
+     * Updates parameter values in other model classes
+     *
+     * TODO: complete this!
+     */
+    // void updateParameters(ParameterVector<Type>* p){
+    //   //TODO: complete this!
+    // }
 
     /**
      * @brief evaluate. Runs the model and calculates the joint negative log-likelihood function.
@@ -82,7 +100,7 @@ namespace gmacs{
  * gmacs::Model<Type>
  */
 template <typename Type>
-std::shared_ptr<ModelFW<Type>> p_gmacs_modelFW = nullptr;
+std::shared_ptr<ModelFW<Type>> ModelFW<Type>::p_gmacs_modelFW = nullptr;
 
 }  // namespace gmacs
 

@@ -28,7 +28,19 @@
 #ifndef GMACS_TMBGMACS_H
 #define GMACS_TMBGMACS_H
 
-#include <Rcpp.h>
+#ifndef TMB_HPP_DEFINED
+  #define TMB_HPP_DEFINED
+  #include <TMB.hpp>
+#endif //--TMB_HPP_DEFINED
+#ifndef RCPP_NO_SUGAR
+  #define RCPP_NO_SUGAR
+  #include <Rcpp.h>
+#endif
+
+#include "init.hpp"
+#include "rcpp/rcpp_interface.hpp"
+#include "rcpp/rcpp_objects/rcpp_dimensions.hpp"
+#include "ModelFW.hpp"
 
 #endif
 

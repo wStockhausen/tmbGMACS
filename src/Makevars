@@ -21,11 +21,13 @@ TMB_FLAGS = -I"../../inst/include"  -DTMB_MODEL  -DTMB_EIGEN_DISABLE_WARNINGS
 
 .PHONY: all tmblib
 
-all: $(SHLIB)
+all: clean $(SHLIB)
+
 $(SHLIB): tmblib
 
 tmblib:
-	(cd TMB; $(R_HOME)/bin$(R_ARCH_BIN)/Rscript \
+	(cd TMB; \
+	 $(R_HOME)/bin$(R_ARCH_BIN)/Rscript \
 	--no-save --no-restore compile.R '$(TMB_FLAGS)')
 
 clean:

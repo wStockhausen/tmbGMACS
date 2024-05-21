@@ -4,13 +4,16 @@
 //--TMB.hpp may already be included through tmbGMACS_TMBExports.cpp
 //----if so, macro var TMB_HPP_DEFINED has been defined
 //----check TMB_HPP_DEFINED to create guards to prevent multiple includes of TMB.hpp
-#ifndef TMB_HPP_DEFINED
-  #define TMB_HPP_DEFINED
-  #include <TMB.hpp>
-#endif //--TMB_HPP_DEFINED
+// #ifndef TMB_HPP_DEFINED
+//   #define TMB_HPP_DEFINED
+//   #include <TMB.hpp>
+// #endif //--TMB_HPP_DEFINED
+//
+// #include "init.hpp"
+// #include "rcpp/rcpp_interface.hpp"
+// #include "ModelFW.hpp"
 
-#include "init.hpp"
-#include "ModelFW.hpp"
+#include "tmbGMACS.h"
 
 // name of function _must_ match file name (GMACS)
 /// @cond

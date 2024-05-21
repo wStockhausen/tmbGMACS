@@ -1,4 +1,4 @@
-/** \file tmbGMACS_types.hpp
+/** \file init.hpp
  * This file includes macro and alias definitions.
 */
 /**
@@ -28,12 +28,16 @@
 #define INTERFACE_INIT_HPP
 #include <R_ext/Rdynload.h>
 #include <stdlib.h>
+#ifndef TMB_HPP_DEFINED
+  #define TMB_HPP_DEFINED
+  #include <TMB.hpp>
+#endif //--TMB_HPP_DEFINED
 
 /**
  *
  * Callback definition for TMB C++ functions.
  *
- * include/tmb_core.hpp also defines TMB_CALLDEFS and the following functions,
+ * Note that include/tmb_core.hpp also defines TMB_CALLDEFS and the following functions,
  * but also includes "tmbad_print", "TransformADFunObject", "getFramework",
  * and "getSetGlobalPtr" function callbacks, which are missing here.
  *
@@ -73,7 +77,8 @@ SEXP _rcpp_module_boot_tmbgmacs();
 static R_CallMethodDef CallEntries[] = {
     TMB_CALLDEFS,
     {"_rcpp_module_boot_tmbgmacs", (DL_FUNC)&_rcpp_module_boot_tmbgmacs, 0},
-    {NULL, NULL, 0}};
+    {NULL, NULL, 0}
+};
 
 /**
  * GMACS shared object initializer.
@@ -90,6 +95,6 @@ void R_init_tmbGMACS_TMBExports(DllInfo *dll) {
   TMB_CCALLABLES("tmbGMACS");
 #endif
 }
-}
+} //--extern "C"
 
-#endif
+#endif //--INTERFACE_INIT_HPP
